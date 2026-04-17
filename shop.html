@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda — Golf Pro Apate</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="shop.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛳</text></svg>">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">⛳</div>
+            <span class="nav-logo-text">Golf Pro <span>Apate</span></span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="players.html">Jugadores</a></li>
+            <li><a href="tournaments.html">Torneos</a></li>
+            <li><a href="shop.html" class="active">Tienda</a></li>
+        </ul>
+        <div class="nav-actions">
+            <button class="btn btn-outline btn-sm" onclick="toggleCart()" style="position:relative;">
+                🛒 Carrito <span id="cartBadge" style="position:absolute;top:-6px;right:-6px;background:var(--gold);color:var(--green-deep);width:18px;height:18px;border-radius:50%;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;display:none;">0</span>
+            </button>
+            <div class="nav-user" id="navUser">
+                <a href="login.php" class="btn btn-dark btn-sm">Iniciar sesión</a>
+                <a href="register.php" class="btn btn-primary btn-sm">Registrarse</a>
+            </div>
+            <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+        </div>
+    </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div style="background:var(--green-deep);padding:120px 0 56px;text-align:center;">
+    <div class="container">
+        <div style="font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">🛍️ Equipamiento Premium</div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);color:var(--ivory);">La Tienda Pro</h1>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:rgba(245,240,232,.65);margin-top:12px;">Palos · Ropa · Accesorios · Tecnología · Las mejores marcas</p>
+    </div>
+</div>
+
+<!-- MAIN -->
+<section class="section section-cream">
+    <div class="container">
+
+        <!-- Category Buttons -->
+        <div class="shop-categories fade-up" id="categoryBtns">
+            <button class="category-btn active" data-cat="all" onclick="setCategory('all',this)"><span class="category-icon">🏬</span> Todo</button>
+            <button class="category-btn" data-cat="palos" onclick="setCategory('palos',this)"><span class="category-icon">🏌️</span> Palos de Golf</button>
+            <button class="category-btn" data-cat="pelotas" onclick="setCategory('pelotas',this)"><span class="category-icon">⛳</span> Pelotas</button>
+            <button class="category-btn" data-cat="ropa" onclick="setCategory('ropa',this)"><span class="category-icon">👕</span> Ropa</button>
+            <button class="category-btn" data-cat="calzado" onclick="setCategory('calzado',this)"><span class="category-icon">👟</span> Calzado</button>
+            <button class="category-btn" data-cat="bolsas" onclick="setCategory('bolsas',this)"><span class="category-icon">🎒</span> Bolsas y Carros</button>
+            <button class="category-btn" data-cat="accesorios" onclick="setCategory('accesorios',this)"><span class="category-icon">🧢</span> Accesorios</button>
+            <button class="category-btn" data-cat="tecnologia" onclick="setCategory('tecnologia',this)"><span class="category-icon">📡</span> Tecnología</button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar fade-up">
+            <div class="filter-bar-top">
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="shopSearch" placeholder="Buscar producto, marca..." oninput="applyFilters()">
+                </div>
+                <select class="sort-select" id="shopSort" onchange="applyFilters()">
+                    <option value="featured">Destacados</option>
+                    <option value="priceasc">Precio: Menor a Mayor</option>
+                    <option value="pricedesc">Precio: Mayor a Menor</option>
+                    <option value="name">Nombre A–Z</option>
+                </select>
+            </div>
+            <div class="filter-bar-bottom">
+                <span class="filter-label">Precio:</span>
+                <button class="filter-chip active" data-price="all" onclick="setPrice('all',this)">Todos</button>
+                <button class="filter-chip" data-price="0-100" onclick="setPrice('0-100',this)">Hasta €100</button>
+                <button class="filter-chip" data-price="100-300" onclick="setPrice('100-300',this)">€100–€300</button>
+                <button class="filter-chip" data-price="300-1000" onclick="setPrice('300-1000',this)">€300–€1000</button>
+                <button class="filter-chip" data-price="1000+" onclick="setPrice('1000+',this)">+€1000</button>
+            </div>
+        </div>
+
+        <div class="results-meta">Mostrando <strong id="resultCount">0</strong> productos</div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="productsGrid"></div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+    </div>
+</section>
+
+<!-- Cart sidebar -->
+<div id="cartOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1500;display:none;backdrop-filter:blur(4px);" onclick="toggleCart()"></div>
+<div id="cartSidebar" style="position:fixed;right:-420px;top:0;bottom:0;width:420px;background:var(--cream);z-index:1600;box-shadow:var(--shadow-lg);padding:32px;overflow-y:auto;transition:right .4s cubic-bezier(.4,0,.2,1);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <h2 style="font-family:'Playfair Display',serif;color:var(--green-deep);">🛒 Tu Carrito</h2>
+        <button onclick="toggleCart()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-light);">✕</button>
+    </div>
+    <div id="cartItems" style="min-height:200px;"></div>
+    <div id="cartTotal" style="display:none;border-top:2px solid var(--ivory-dark);margin-top:24px;padding-top:20px;">
+        <div style="display:flex;justify-content:space-between;font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--green-deep);margin-bottom:16px;">
+            <span>Total</span><span id="totalAmount">€0</span>
+        </div>
+        <button class="btn btn-primary" style="width:100%;" onclick="checkout()">Finalizar Compra →</button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="nav-logo" style="margin-bottom:12px;display:inline-flex;">
+                    <div class="nav-logo-icon" style="width:36px;height:36px;font-size:1rem;">⛳</div>
+                    <span class="nav-logo-text" style="font-size:1.1rem;">Golf Pro <span>Apate</span></span>
+                </a>
+                <p>El portal de referencia para el golf de élite.</p>
+            </div>
+            <div><div class="footer-col-title">Secciones</div>
+                <ul class="footer-links"><li><a href="players.html">Jugadores</a></li><li><a href="tournaments.html">Torneos</a></li><li><a href="shop.html">Tienda</a></li></ul>
+            </div>
+            <div><div class="footer-col-title">Cuenta</div>
+                <ul class="footer-links"><li><a href="login.php">Iniciar sesión</a></li><li><a href="register.php">Registrarse</a></li></ul>
+            </div>
+            <div><div class="footer-col-title">Categorías</div>
+                <ul class="footer-links"><li><a href="#">Palos de Golf</a></li><li><a href="#">Ropa</a></li><li><a href="#">Accesorios</a></li><li><a href="#">Tecnología</a></li></ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Golf Pro Apate. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const products = [
+    // PALOS
+    { id:1,  name:"Driver TaylorMade Qi35 Max", cat:"palos",      price:599,  oldPrice:699,  emoji:"🏌️", brand:"TaylorMade", badge:"Oferta",  desc:"Driver de máxima distancia con tecnología de carbono ultraligero.",   featured:true  },
+    { id:2,  name:"Set de Hierros Callaway Apex 24", cat:"palos", price:1299, oldPrice:null, emoji:"⛏️", brand:"Callaway",   badge:"Nuevo",   desc:"Set completo de hierros forjados para jugadores avanzados.",          featured:true  },
+    { id:3,  name:"Putter Odyssey White Hot OG",    cat:"palos",  price:249,  oldPrice:null, emoji:"🎯", brand:"Odyssey",    badge:null,      desc:"Putter clásico con inserto White Hot de alta respuesta.",            featured:false },
+    { id:4,  name:"Wedge Cleveland RTX ZipCore",    cat:"palos",  price:179,  oldPrice:199,  emoji:"🏹", brand:"Cleveland",  badge:"Oferta",  desc:"Wedge de alta precisión para acercamientos y bunkers.",              featured:false },
+    { id:5,  name:"Madera 3 Ping G430 Max",         cat:"palos",  price:389,  oldPrice:null, emoji:"🪓", brand:"Ping",       badge:"Nuevo",   desc:"Madera 3 de alta velocidad con cara de acero de alta resistencia.", featured:false },
+    // PELOTAS
+    { id:6,  name:"Titleist Pro V1x (docena)",   cat:"pelotas",   price:59,   oldPrice:null, emoji:"⚪", brand:"Titleist",   badge:null,      desc:"La pelota preferida por los profesionales del Tour.",                featured:true  },
+    { id:7,  name:"TaylorMade TP5x (docena)",    cat:"pelotas",   price:55,   oldPrice:null, emoji:"⚪", brand:"TaylorMade", badge:"Nuevo",   desc:"5 capas de tecnología para máxima distancia y control.",             featured:false },
+    { id:8,  name:"Callaway Chrome Soft (docena)",cat:"pelotas",  price:49,   oldPrice:54,   emoji:"⚪", brand:"Callaway",   badge:"Oferta",  desc:"Pelota de tacto suave con trayectoria larga y baja.",                featured:false },
+    // ROPA
+    { id:9,  name:"Polo Nike Dri-FIT Tour",      cat:"ropa",      price:89,   oldPrice:null, emoji:"👕", brand:"Nike Golf",  badge:"Nuevo",   desc:"Polo técnico transpirable para máximo confort en el campo.",         featured:true  },
+    { id:10, name:"Pantalón Under Armour Takeover", cat:"ropa",   price:119,  oldPrice:null, emoji:"👖", brand:"Under Armour",badge:null,     desc:"Pantalón elástico de 4 vías con tecnología anti-humedad.",           featured:false },
+    { id:11, name:"Cortavientos FootJoy HydroLite",cat:"ropa",    price:149,  oldPrice:179,  emoji:"🧥", brand:"FootJoy",    badge:"Oferta",  desc:"Chaqueta impermeable ligera para cualquier condición climática.",     featured:false },
+    { id:12, name:"Gorra Titleist Tour Performance",cat:"ropa",   price:35,   oldPrice:null, emoji:"🧢", brand:"Titleist",   badge:null,      desc:"Gorra técnica con protección UV y ajuste perfecto.",                 featured:false },
+    // CALZADO
+    { id:13, name:"Zapatos FootJoy Premiere Series",cat:"calzado", price:229,  oldPrice:null, emoji:"👞", brand:"FootJoy",    badge:"Nuevo",   desc:"El zapato más premium de FootJoy con cuero de plena flor.",         featured:true  },
+    { id:14, name:"Zapatillas Adidas ZG23 BOA",  cat:"calzado",   price:189,  oldPrice:210,  emoji:"👟", brand:"Adidas",     badge:"Oferta",  desc:"Sistema de cierre BOA para ajuste perfecto y cómodo.",              featured:false },
+    { id:15, name:"Spike Nike Air Zoom Infinity", cat:"calzado",   price:169,  oldPrice:null, emoji:"👟", brand:"Nike Golf",  badge:null,      desc:"Tracción superior con amortiguación React para más comodidad.",      featured:false },
+    // BOLSAS
+    { id:16, name:"Bolsa Tour Sun Mountain C-130",cat:"bolsas",   price:399,  oldPrice:null, emoji:"🎒", brand:"Sun Mountain",badge:"Nuevo",  desc:"Bolsa de carro de fibra de carbono ultraligera.",                    featured:true  },
+    { id:17, name:"Carro Eléctrico Motocaddy M7",cat:"bolsas",    price:1299, oldPrice:null, emoji:"🛺", brand:"Motocaddy",  badge:null,      desc:"Carro eléctrico con GPS integrado y seguimiento automático.",        featured:false },
+    { id:18, name:"Bolsa Stand Titleist Players 5",cat:"bolsas",  price:279,  oldPrice:299,  emoji:"🎒", brand:"Titleist",   badge:"Oferta",  desc:"Bolsa de transporte con doble correa ergonómica y 14 divisores.",   featured:false },
+    // ACCESORIOS
+    { id:19, name:"Guante FootJoy StaSof",       cat:"accesorios", price:29,   oldPrice:null, emoji:"🧤", brand:"FootJoy",    badge:null,      desc:"El guante más vendido del mundo por su tacto y durabilidad.",       featured:false },
+    { id:20, name:"Tees Zero Friction (100u)",   cat:"accesorios", price:12,   oldPrice:null, emoji:"📌", brand:"Zero Friction",badge:null,    desc:"Tees de bajo rozamiento para mayor distancia en el drive.",          featured:false },
+    { id:21, name:"Rangefinder Bushnell Tour V6", cat:"tecnologia",price:399,  oldPrice:449,  emoji:"📡", brand:"Bushnell",   badge:"Oferta",  desc:"Telémetro láser profesional con tecnología Slope Switch.",           featured:true  },
+    { id:22, name:"GPS Garmin Approach S62",     cat:"tecnologia", price:549,  oldPrice:null, emoji:"⌚", brand:"Garmin",     badge:"Nuevo",   desc:"Reloj GPS de golf con mapas de más de 42.000 campos.",              featured:true  },
+    { id:23, name:"Simulador SkyTrak+",          cat:"tecnologia", price:2999, oldPrice:null, emoji:"🖥️", brand:"SkyTrak",    badge:"Nuevo",   desc:"Sistema de simulación de golf para practicar en casa.",             featured:false },
+    { id:24, name:"Paraguas Titleist Tour Double",cat:"accesorios",price:79,   oldPrice:null, emoji:"☂️", brand:"Titleist",   badge:null,      desc:"Paraguas doble de golf resistente al viento para condiciones adversas.",featured:false },
+];
+
+let currentCat   = 'all';
+let currentPrice = 'all';
+let currentPage  = 1;
+const PER_PAGE   = 8;
+let cart = [];
+
+function setCategory(c, btn) {
+    currentCat = c; currentPage = 1;
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+}
+
+function setPrice(p, btn) {
+    currentPrice = p; currentPage = 1;
+    document.querySelectorAll('[data-price]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+}
+
+function priceInRange(p, range) {
+    if (range === 'all') return true;
+    if (range === '0-100')    return p < 100;
+    if (range === '100-300')  return p >= 100 && p <= 300;
+    if (range === '300-1000') return p > 300 && p <= 1000;
+    if (range === '1000+')    return p > 1000;
+    return true;
+}
+
+function applyFilters() {
+    const query = document.getElementById('shopSearch').value.toLowerCase();
+    const sort  = document.getElementById('shopSort').value;
+    let data = [...products];
+
+    if (currentCat !== 'all')   data = data.filter(p => p.cat === currentCat);
+    if (currentPrice !== 'all') data = data.filter(p => priceInRange(p.price, currentPrice));
+    if (query) data = data.filter(p =>
+        p.name.toLowerCase().includes(query) ||
+        p.brand.toLowerCase().includes(query) ||
+        p.desc.toLowerCase().includes(query)
+    );
+
+    if (sort === 'priceasc')  data.sort((a,b) => a.price - b.price);
+    else if (sort === 'pricedesc') data.sort((a,b) => b.price - a.price);
+    else if (sort === 'name') data.sort((a,b) => a.name.localeCompare(b.name));
+    else data.sort((a,b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+
+    renderGrid(data);
+}
+
+function renderGrid(data) {
+    const total = data.length;
+    const pages = Math.ceil(total / PER_PAGE);
+    if (currentPage > pages && pages > 0) currentPage = pages;
+    const start = (currentPage - 1) * PER_PAGE;
+    const paged = data.slice(start, start + PER_PAGE);
+
+    document.getElementById('resultCount').textContent = total;
+
+    const grid = document.getElementById('productsGrid');
+    grid.innerHTML = paged.length === 0
+        ? `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-light);">
+               <div style="font-size:3rem;margin-bottom:16px;">🛍️</div>
+               <h3 style="font-family:'Playfair Display',serif;margin-bottom:8px;color:var(--green-deep);">Sin productos</h3>
+               <p>Prueba con otros filtros</p>
+           </div>`
+        : paged.map(p => productCard(p)).join('');
+
+    renderPagination(pages, data);
+}
+
+const catLabels = { palos:'Palos', pelotas:'Pelotas', ropa:'Ropa', calzado:'Calzado', bolsas:'Bolsas & Carros', accesorios:'Accesorios', tecnologia:'Tecnología' };
+
+function productCard(p) {
+    return `
+    <div class="product-card fade-up visible">
+        <div class="product-image">
+            <div class="product-emoji">${p.emoji}</div>
+            ${p.badge ? `<div class="product-badge ${p.badge==='Nuevo'?'new':''}">${p.badge}</div>` : ''}
+        </div>
+        <div class="product-body">
+            <div class="product-category">${catLabels[p.cat]||p.cat} · ${p.brand}</div>
+            <div class="product-name">${p.name}</div>
+            <div class="product-desc">${p.desc}</div>
+            <div class="product-footer">
+                <div>
+                    <span class="product-price">€${p.price.toLocaleString('es-ES')}</span>
+                    ${p.oldPrice ? `<span class="product-price-old">€${p.oldPrice}</span>` : ''}
+                </div>
+                <button class="btn-cart" onclick="addToCart(${p.id})" title="Añadir al carrito">🛒</button>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderPagination(pages, data) {
+    if (pages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+    let html = `<button class="page-btn prev" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>← Ant</button>`;
+    for (let i = 1; i <= pages; i++) {
+        html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    }
+    html += `<button class="page-btn next" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>Sig →</button>`;
+    document.getElementById('pagination').innerHTML = html;
+}
+
+function goPage(n) {
+    const query = document.getElementById('shopSearch').value.toLowerCase();
+    const sort  = document.getElementById('shopSort').value;
+    let data = [...products];
+    if (currentCat !== 'all') data = data.filter(p => p.cat === currentCat);
+    if (currentPrice !== 'all') data = data.filter(p => priceInRange(p.price, currentPrice));
+    if (query) data = data.filter(p => p.name.toLowerCase().includes(query) || p.brand.toLowerCase().includes(query));
+    const pages = Math.ceil(data.length / PER_PAGE);
+    if (n < 1 || n > pages) return;
+    currentPage = n;
+    renderGrid(data);
+    window.scrollTo({ top: 300, behavior:'smooth' });
+}
+
+// Cart
+function addToCart(id) {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    const existing = cart.find(x => x.id === id);
+    if (existing) existing.qty++;
+    else cart.push({ ...p, qty: 1 });
+    updateCartBadge();
+    showToast(`✅ "${p.name}" añadido al carrito`);
+}
+
+function updateCartBadge() {
+    const badge = document.getElementById('cartBadge');
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    badge.textContent = total;
+    badge.style.display = total > 0 ? 'flex' : 'none';
+}
+
+function toggleCart() {
+    const sidebar  = document.getElementById('cartSidebar');
+    const overlay  = document.getElementById('cartOverlay');
+    const isOpen   = sidebar.style.right === '0px';
+    sidebar.style.right  = isOpen ? '-420px' : '0px';
+    overlay.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) renderCart();
+}
+
+function renderCart() {
+    const items   = document.getElementById('cartItems');
+    const totalEl = document.getElementById('cartTotal');
+    if (cart.length === 0) {
+        items.innerHTML = `<div style="text-align:center;padding:40px 0;color:var(--text-light);">
+            <div style="font-size:3rem;margin-bottom:12px;">🛒</div>
+            <p>Tu carrito está vacío</p>
+        </div>`;
+        totalEl.style.display = 'none';
+        return;
+    }
+    items.innerHTML = cart.map(i => `
+        <div style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--ivory-dark);">
+            <div style="width:50px;height:50px;background:var(--green-deep);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">${i.emoji}</div>
+            <div style="flex:1;min-width:0;">
+                <div style="font-weight:500;font-size:.9rem;color:var(--text-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.name}</div>
+                <div style="font-size:.8rem;color:var(--text-light);">${i.brand}</div>
+                <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+                    <button onclick="changeQty(${i.id},-1)" style="width:24px;height:24px;border-radius:4px;border:1px solid var(--ivory-dark);background:var(--white);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">−</button>
+                    <span style="font-weight:600;">${i.qty}</span>
+                    <button onclick="changeQty(${i.id},1)" style="width:24px;height:24px;border-radius:4px;border:1px solid var(--ivory-dark);background:var(--white);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">+</button>
+                </div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+                <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--green-deep);">€${(i.price * i.qty).toLocaleString('es-ES')}</div>
+                <button onclick="removeFromCart(${i.id})" style="background:none;border:none;color:var(--text-light);cursor:pointer;font-size:.75rem;margin-top:4px;">Eliminar</button>
+            </div>
+        </div>`).join('');
+
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    document.getElementById('totalAmount').textContent = `€${total.toLocaleString('es-ES')}`;
+    totalEl.style.display = 'block';
+}
+
+function changeQty(id, delta) {
+    const item = cart.find(x => x.id === id);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+    updateCartBadge();
+    renderCart();
+}
+
+function removeFromCart(id) {
+    cart = cart.filter(x => x.id !== id);
+    updateCartBadge();
+    renderCart();
+}
+
+function checkout() {
+    showToast('⛳ Redirigiendo al pago... (integración pendiente)');
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Init
+applyFilters();
+
+document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('mobile-open');
+});
+window.addEventListener('scroll', () => {
+    document.getElementById('navbar').style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(13,40,24,.4)' : 'none';
+});
+</script>
+</body>
+</html>

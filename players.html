@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jugadores — Golf Pro Apate</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="players.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛳</text></svg>">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">⛳</div>
+                <span class="nav-logo-text">Golf Pro <span>Apate</span></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="players.html" class="active">Jugadores</a></li>
+                <li><a href="tournaments.html">Torneos</a></li>
+                <li><a href="shop.html">Tienda</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="nav-user" id="navUser">
+                    <a href="login.php" class="btn btn-outline btn-sm">Iniciar sesión</a>
+                    <a href="register.php" class="btn btn-primary btn-sm">Registrarse</a>
+                </div>
+                <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div style="background:var(--green-deep);padding:120px 0 56px;text-align:center;">
+        <div class="container">
+            <div
+                style="font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">
+                ⛳ Rankings Oficiales</div>
+            <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);color:var(--ivory);">
+                Jugadores de Élite</h1>
+            <p
+                style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:rgba(245,240,232,.65);margin-top:12px;">
+                Rankings mundiales actualizados · Hombres y Mujeres</p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <section class="section section-cream">
+        <div class="container">
+
+            <!-- Tabs -->
+            <div class="players-tabs fade-up" id="playerTabs">
+                <button class="players-tab active" data-tab="men" onclick="switchTab('men')">🏌️ Hombres</button>
+                <button class="players-tab" data-tab="women" onclick="switchTab('women')">🏌️‍♀️ Mujeres</button>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar fade-up">
+                <div class="filter-bar-top">
+                    <div class="search-wrap">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="playerSearch" placeholder="Buscar jugador por nombre o país..."
+                            oninput="applyFilters()">
+                    </div>
+                    <select class="sort-select" id="playerSort" onchange="applyFilters()">
+                        <option value="rank">Ordenar: Ranking</option>
+                        <option value="name">Ordenar: Nombre A–Z</option>
+                        <option value="country">Ordenar: País</option>
+                        <option value="wins">Ordenar: Victorias</option>
+                    </select>
+                </div>
+                <div class="filter-bar-bottom">
+                    <span class="filter-label">Continente:</span>
+                    <button class="filter-chip active" data-region="all" onclick="setRegion('all',this)">Todos</button>
+                    <button class="filter-chip" data-region="america"
+                        onclick="setRegion('america',this)">Américas</button>
+                    <button class="filter-chip" data-region="europe" onclick="setRegion('europe',this)">Europa</button>
+                    <button class="filter-chip" data-region="asia"
+                        onclick="setRegion('asia',this)">Asia-Pacífico</button>
+                </div>
+            </div>
+
+            <!-- Results meta -->
+            <div class="results-meta" id="resultsMeta">Mostrando <strong id="resultCount">0</strong> jugadores</div>
+
+            <!-- Players Grid -->
+            <div class="players-grid" id="playersGrid"></div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo" style="margin-bottom:12px;display:inline-flex;">
+                        <div class="nav-logo-icon" style="width:36px;height:36px;font-size:1rem;">⛳</div>
+                        <span class="nav-logo-text" style="font-size:1.1rem;">Golf Pro <span>Apate</span></span>
+                    </a>
+                    <p>El portal de referencia para el golf de élite.</p>
+                </div>
+                <div>
+                    <div class="footer-col-title">Secciones</div>
+                    <ul class="footer-links">
+                        <li><a href="players.html">Jugadores</a></li>
+                        <li><a href="tournaments.html">Torneos</a></li>
+                        <li><a href="shop.html">Tienda</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-col-title">Cuenta</div>
+                    <ul class="footer-links">
+                        <li><a href="login.php">Iniciar sesión</a></li>
+                        <li><a href="register.php">Registrarse</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-col-title">Circuitos</div>
+                    <ul class="footer-links">
+                        <li><a href="tournaments.html">PGA Tour</a></li>
+                        <li><a href="tournaments.html">LPGA Tour</a></li>
+                        <li><a href="tournaments.html">DP World Tour</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Golf Pro Apate. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ── Data ──────────────────────────────────────────────
+        const menPlayers = [
+            { rank: 1, name: "Scottie Scheffler", country: "🇺🇸 EE.UU.", region: "america", wins: 15, avg: 69.2, earnings: "24.5M", photo: "img/jugadores/scheffler.jpg" },
+            { rank: 2, name: "Rory McIlroy", country: "🇬🇧 Irlanda del Norte", region: "europe", wins: 24, avg: 69.8, earnings: "18.2M", photo: "img/jugadores/mcilroy.jpg" },
+            { rank: 3, name: "Xander Schauffele", country: "🇺🇸 EE.UU.", region: "america", wins: 5, avg: 70.0, earnings: "9.8M", photo: "img/jugadores/schauffele.jpg" },
+            { rank: 4, name: "Collin Morikawa", country: "🇺🇸 EE.UU.", region: "america", wins: 6, avg: 70.1, earnings: "8.4M", photo: "img/jugadores/morikawa.jpg" },
+            { rank: 5, name: "Hideki Matsuyama", country: "🇯🇵 Japón", region: "asia", wins: 10, avg: 70.3, earnings: "7.9M", photo: "img/jugadores/matsuyama.jpg" },
+            { rank: 6, name: "Patrick Cantlay", country: "🇺🇸 EE.UU.", region: "america", wins: 8, avg: 70.4, earnings: "7.1M", photo: "img/jugadores/cantlay.jpg" },
+            { rank: 7, name: "Viktor Hovland", country: "🇳🇴 Noruega", region: "europe", wins: 5, avg: 70.5, earnings: "6.8M" },
+            { rank: 8, name: "Jon Rahm", country: "🇪🇸 España", region: "europe", wins: 10, avg: 70.6, earnings: "6.5M" },
+            { rank: 9, name: "Max Homa", country: "🇺🇸 EE.UU.", region: "america", wins: 6, avg: 70.7, earnings: "5.9M" },
+            { rank: 10, name: "Tommy Fleetwood", country: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra", region: "europe", wins: 5, avg: 70.8, earnings: "5.5M" },
+            { rank: 11, name: "Brian Harman", country: "🇺🇸 EE.UU.", region: "america", wins: 4, avg: 70.9, earnings: "5.2M" },
+            { rank: 12, name: "Tony Finau", country: "🇺🇸 EE.UU.", region: "america", wins: 6, avg: 71.0, earnings: "5.0M" },
+            { rank: 13, name: "Shane Lowry", country: "🇮🇪 Irlanda", region: "europe", wins: 4, avg: 71.1, earnings: "4.8M" },
+            { rank: 14, name: "Ludvig Åberg", country: "🇸🇪 Suecia", region: "europe", wins: 2, avg: 71.2, earnings: "4.5M" },
+            { rank: 15, name: "Sungjae Im", country: "🇰🇷 Corea del Sur", region: "asia", wins: 5, avg: 71.3, earnings: "4.3M" },
+            { rank: 16, name: "Tom Kim", country: "🇰🇷 Corea del Sur", region: "asia", wins: 3, avg: 71.4, earnings: "4.1M" },
+            { rank: 17, name: "Justin Thomas", country: "🇺🇸 EE.UU.", region: "america", wins: 15, avg: 71.5, earnings: "3.9M" },
+            { rank: 18, name: "Jordan Spieth", country: "🇺🇸 EE.UU.", region: "america", wins: 13, avg: 71.6, earnings: "3.7M" },
+            { rank: 19, name: "Cameron Young", country: "🇺🇸 EE.UU.", region: "america", wins: 1, avg: 71.7, earnings: "3.5M" },
+            { rank: 20, name: "Sahith Theegala", country: "🇺🇸 EE.UU.", region: "america", wins: 2, avg: 71.8, earnings: "3.4M" },
+        ];
+
+        const womenPlayers = [
+            { rank: 1, name: "Nelly Korda", country: "🇺🇸 EE.UU.", region: "america", wins: 9, avg: 70.1, earnings: "5.8M" },
+            { rank: 2, name: "Lydia Ko", country: "🇳🇿 Nueva Zelanda", region: "asia", wins: 20, avg: 70.4, earnings: "4.2M" },
+            { rank: 3, name: "Céline Boutier", country: "🇫🇷 Francia", region: "europe", wins: 3, avg: 70.5, earnings: "3.5M" },
+            { rank: 4, name: "Brooke Henderson", country: "🇨🇦 Canadá", region: "america", wins: 13, avg: 70.7, earnings: "3.1M" },
+            { rank: 5, name: "Hannah Green", country: "🇦🇺 Australia", region: "asia", wins: 3, avg: 70.8, earnings: "2.9M" },
+            { rank: 6, name: "Minjee Lee", country: "🇦🇺 Australia", region: "asia", wins: 5, avg: 70.9, earnings: "2.7M" },
+            { rank: 7, name: "Charley Hull", country: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra", region: "europe", wins: 3, avg: 71.0, earnings: "2.5M" },
+            { rank: 8, name: "Lilia Vu", country: "🇺🇸 EE.UU.", region: "america", wins: 3, avg: 71.1, earnings: "2.4M" },
+            { rank: 9, name: "Jin Hee Im", country: "🇰🇷 Corea del Sur", region: "asia", wins: 3, avg: 71.2, earnings: "2.2M" },
+            { rank: 10, name: "Ayaka Furue", country: "🇯🇵 Japón", region: "asia", wins: 2, avg: 71.3, earnings: "2.0M" },
+            { rank: 11, name: "Rose Zhang", country: "🇺🇸 EE.UU.", region: "america", wins: 2, avg: 71.4, earnings: "1.9M" },
+            { rank: 12, name: "Georgia Hall", country: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra", region: "europe", wins: 4, avg: 71.5, earnings: "1.8M" },
+            { rank: 13, name: "Hana Jang", country: "🇰🇷 Corea del Sur", region: "asia", wins: 1, avg: 71.6, earnings: "1.6M" },
+            { rank: 14, name: "Leona Maguire", country: "🇮🇪 Irlanda", region: "europe", wins: 2, avg: 71.7, earnings: "1.5M" },
+            { rank: 15, name: "Atthaya Thitikul", country: "🇹🇭 Tailandia", region: "asia", wins: 4, avg: 71.8, earnings: "1.4M" },
+        ];
+
+        // ── State ─────────────────────────────────────────────
+        let currentTab = 'men';
+        let currentRegion = 'all';
+        let currentPage = 1;
+        const PER_PAGE = 8;
+
+        // ── Core Functions ────────────────────────────────────
+        function switchTab(tab) {
+            currentTab = tab;
+            currentPage = 1;
+            document.querySelectorAll('.players-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+            applyFilters();
+        }
+
+        function setRegion(region, btn) {
+            currentRegion = region;
+            currentPage = 1;
+            document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('playerSearch').value.toLowerCase();
+            const sort = document.getElementById('playerSort').value;
+            let data = currentTab === 'men' ? [...menPlayers] : [...womenPlayers];
+
+            // Filter by region
+            if (currentRegion !== 'all') data = data.filter(p => p.region === currentRegion);
+
+            // Filter by search
+            if (query) data = data.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.country.toLowerCase().includes(query)
+            );
+
+            // Sort
+            if (sort === 'name') data.sort((a, b) => a.name.localeCompare(b.name));
+            else if (sort === 'country') data.sort((a, b) => a.country.localeCompare(b.country));
+            else if (sort === 'wins') data.sort((a, b) => b.wins - a.wins);
+            else data.sort((a, b) => a.rank - b.rank);
+
+            renderGrid(data);
+        }
+
+        function renderGrid(data) {
+            const total = data.length;
+            const pages = Math.ceil(total / PER_PAGE);
+            if (currentPage > pages && pages > 0) currentPage = pages;
+
+            const start = (currentPage - 1) * PER_PAGE;
+            const paged = data.slice(start, start + PER_PAGE);
+
+            document.getElementById('resultCount').textContent = total;
+
+            const grid = document.getElementById('playersGrid');
+            grid.innerHTML = paged.length === 0
+                ? `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-light);">
+               <div style="font-size:3rem;margin-bottom:16px;">🔍</div>
+               <h3 style="font-family:'Playfair Display',serif;margin-bottom:8px;color:var(--green-deep);">Sin resultados</h3>
+               <p>Prueba con otros filtros de búsqueda</p>
+           </div>`
+                : paged.map(p => playerCard(p)).join('');
+
+            renderPagination(pages);
+        }
+
+        function playerCard(p) {
+            const rankClass = p.rank <= 3 ? 'top3' : '';
+            const letter = p.name.charAt(0);
+            return `
+    <div class="player-card fade-up visible" onclick="showPlayerDetail('${p.name}')">
+        <div class="player-avatar">
+            <div class="player-avatar-letter">${letter}</div>
+        </div>
+        <div class="player-card-rank ${rankClass}">${p.rank <= 3 ? '🥇'.slice(0, p.rank === 1 ? 2 : 0) || '' : ''}#${p.rank}</div>
+        <div class="player-info">
+            <div class="player-name">${p.name}</div>
+            <div class="player-country">${p.country}</div>
+            <div class="player-stats">
+                <div class="player-stat-item">
+                    <span class="player-stat-val">${p.wins}</span>
+                    <span class="player-stat-key">Victorias</span>
+                </div>
+                <div class="player-stat-item">
+                    <span class="player-stat-val">${p.avg}</span>
+                    <span class="player-stat-key">Media</span>
+                </div>
+                <div class="player-stat-item">
+                    <span class="player-stat-val">$${p.earnings}</span>
+                    <span class="player-stat-key">Ganancias</span>
+                </div>
+            </div>
+        </div>
+    </div>`;
+        }
+
+        function renderPagination(pages) {
+            if (pages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+            let html = `<button class="page-btn prev" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>← Ant</button>`;
+            for (let i = 1; i <= pages; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+            }
+            html += `<button class="page-btn next" onclick="goPage(${currentPage + 1})" ${currentPage === pages ? 'disabled' : ''}>Sig →</button>`;
+            document.getElementById('pagination').innerHTML = html;
+        }
+
+        function goPage(n) {
+            const query = document.getElementById('playerSearch').value.toLowerCase();
+            const sort = document.getElementById('playerSort').value;
+            let data = currentTab === 'men' ? [...menPlayers] : [...womenPlayers];
+            if (currentRegion !== 'all') data = data.filter(p => p.region === currentRegion);
+            if (query) data = data.filter(p => p.name.toLowerCase().includes(query) || p.country.toLowerCase().includes(query));
+            if (sort === 'name') data.sort((a, b) => a.name.localeCompare(b.name));
+            else if (sort === 'country') data.sort((a, b) => a.country.localeCompare(b.country));
+            else if (sort === 'wins') data.sort((a, b) => b.wins - a.wins);
+            else data.sort((a, b) => a.rank - b.rank);
+            const pages = Math.ceil(data.length / PER_PAGE);
+            if (n < 1 || n > pages) return;
+            currentPage = n;
+            renderGrid(data);
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+
+        function showPlayerDetail(name) {
+            const all = [...menPlayers, ...womenPlayers];
+            const p = all.find(x => x.name === name);
+            if (!p) return;
+            const modal = document.getElementById('playerModal');
+            document.getElementById('modalContent').innerHTML = `
+        <div style="text-align:center;padding:20px 0;">
+            <div style="width:90px;height:90px;background:var(--green-deep);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--gold);">${p.name.charAt(0)}</div>
+            <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--green-deep);margin-bottom:6px;">${p.name}</h2>
+            <p style="color:var(--text-light);margin-bottom:4px;">${p.country}</p>
+            <p style="font-size:1.1rem;color:var(--gold-dim);font-weight:600;margin-bottom:24px;">Ranking Mundial #${p.rank}</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;background:var(--ivory);border-radius:12px;padding:20px;">
+                <div><div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--green-mid);">${p.wins}</div><div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);">Victorias PGA</div></div>
+                <div><div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--green-mid);">${p.avg}</div><div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);">Media Golpes</div></div>
+                <div><div style="font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--green-mid);">$${p.earnings}</div><div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);">Ganancias</div></div>
+            </div>
+        </div>`;
+            modal.classList.add('open');
+        }
+
+        // Init
+        applyFilters();
+
+        // Nav
+        document.getElementById('hamburger').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('mobile-open');
+        });
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(13,40,24,.4)' : 'none';
+        });
+    </script>
+
+    <!-- Player Detail Modal -->
+    <div class="modal-overlay" id="playerModal" onclick="if(event.target===this)this.classList.remove('open')">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 style="font-family:'Playfair Display',serif;color:var(--green-deep);">Perfil del Jugador</h3>
+                <button class="modal-close"
+                    onclick="document.getElementById('playerModal').classList.remove('open')">✕</button>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+</body>
+
+</html>

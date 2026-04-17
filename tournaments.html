@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneos — Golf Pro Apate</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tournaments.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛳</text></svg>">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-icon">⛳</div>
+            <span class="nav-logo-text">Golf Pro <span>Apate</span></span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="players.html">Jugadores</a></li>
+            <li><a href="tournaments.html" class="active">Torneos</a></li>
+            <li><a href="shop.html">Tienda</a></li>
+        </ul>
+        <div class="nav-actions">
+            <div class="nav-user" id="navUser">
+                <a href="login.php" class="btn btn-outline btn-sm">Iniciar sesión</a>
+                <a href="register.php" class="btn btn-primary btn-sm">Registrarse</a>
+            </div>
+            <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+        </div>
+    </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div style="background:var(--green-deep);padding:120px 0 56px;text-align:center;">
+    <div class="container">
+        <div style="font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">🏆 Circuito Mundial</div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);color:var(--ivory);">Torneos Principales</h1>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:rgba(245,240,232,.65);margin-top:12px;">Los grandes eventos del golf mundial · Temporada 2025</p>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<section class="section section-cream">
+    <div class="container">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar fade-up">
+            <div class="filter-bar-top">
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="tournSearch" placeholder="Buscar torneo o sede..." oninput="applyFilters()">
+                </div>
+                <select class="sort-select" id="tournSort" onchange="applyFilters()">
+                    <option value="date">Ordenar: Fecha</option>
+                    <option value="name">Ordenar: Nombre A–Z</option>
+                    <option value="prize">Ordenar: Premio Mayor</option>
+                </select>
+            </div>
+            <div class="filter-bar-bottom">
+                <span class="filter-label">Circuito:</span>
+                <button class="filter-chip active" data-circuit="all" onclick="setCircuit('all',this)">Todos</button>
+                <button class="filter-chip" data-circuit="major" onclick="setCircuit('major',this)">⭐ Majors</button>
+                <button class="filter-chip" data-circuit="pga" onclick="setCircuit('pga',this)">PGA Tour</button>
+                <button class="filter-chip" data-circuit="lpga" onclick="setCircuit('lpga',this)">LPGA Tour</button>
+                <button class="filter-chip" data-circuit="dp" onclick="setCircuit('dp',this)">DP World Tour</button>
+                <button class="filter-chip" data-circuit="liv" onclick="setCircuit('liv',this)">LIV Golf</button>
+            </div>
+        </div>
+
+        <div class="results-meta">Mostrando <strong id="resultCount">0</strong> torneos</div>
+
+        <!-- Tournament List -->
+        <div class="tournaments-list" id="tournList"></div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" class="nav-logo" style="margin-bottom:12px;display:inline-flex;">
+                    <div class="nav-logo-icon" style="width:36px;height:36px;font-size:1rem;">⛳</div>
+                    <span class="nav-logo-text" style="font-size:1.1rem;">Golf Pro <span>Apate</span></span>
+                </a>
+                <p>El portal de referencia para el golf de élite.</p>
+            </div>
+            <div><div class="footer-col-title">Secciones</div>
+                <ul class="footer-links"><li><a href="players.html">Jugadores</a></li><li><a href="tournaments.html">Torneos</a></li><li><a href="shop.html">Tienda</a></li></ul>
+            </div>
+            <div><div class="footer-col-title">Cuenta</div>
+                <ul class="footer-links"><li><a href="login.php">Iniciar sesión</a></li><li><a href="register.php">Registrarse</a></li></ul>
+            </div>
+            <div><div class="footer-col-title">Circuitos</div>
+                <ul class="footer-links"><li><a href="#">PGA Tour</a></li><li><a href="#">LPGA Tour</a></li><li><a href="#">DP World Tour</a></li><li><a href="#">LIV Golf</a></li></ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Golf Pro Apate. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Tournament Detail Modal -->
+<div class="modal-overlay" id="tournModal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal" style="max-width:600px;">
+        <div class="modal-header">
+            <h3 style="font-family:'Playfair Display',serif;color:var(--green-deep);">Detalles del Torneo</h3>
+            <button class="modal-close" onclick="document.getElementById('tournModal').classList.remove('open')">✕</button>
+        </div>
+        <div id="tournModalContent"></div>
+    </div>
+</div>
+
+<script>
+const tournaments = [
+    { id:1,  name:"The Masters",               circuit:"major", date:"2025-04-10", month:"ABR", day:"10", year:"2025", venue:"Augusta National Golf Club", location:"Augusta, Georgia, EE.UU.", prize:"18.000.000", purse:"$18M", par:72, holes:72, status:"upcoming", desc:"El primer major del año, jugado en el mítico Augusta National. Considerado el torneo más prestigioso del mundo." },
+    { id:2,  name:"PGA Championship",          circuit:"major", date:"2025-05-15", month:"MAY", day:"15", year:"2025", venue:"Quail Hollow Club",           location:"Charlotte, Carolina del Norte, EE.UU.", prize:"17.500.000", purse:"$17.5M", par:71, holes:72, status:"upcoming", desc:"El segundo major de la temporada, disputado en Quail Hollow Club." },
+    { id:3,  name:"U.S. Open",                 circuit:"major", date:"2025-06-12", month:"JUN", day:"12", year:"2025", venue:"Oakmont Country Club",         location:"Oakmont, Pensilvania, EE.UU.", prize:"21.500.000", purse:"$21.5M", par:70, holes:72, status:"upcoming", desc:"El US Open, conocido por sus condiciones de juego extremadamente difíciles." },
+    { id:4,  name:"The Open Championship",     circuit:"major", date:"2025-07-17", month:"JUL", day:"17", year:"2025", venue:"Royal Portrush Golf Club",     location:"Portrush, Irlanda del Norte", prize:"17.000.000", purse:"$17M", par:71, holes:72, status:"upcoming", desc:"El major más antiguo del golf, disputado en campos links de Gran Bretaña e Irlanda." },
+    { id:5,  name:"AIG Women's British Open",  circuit:"lpga",  date:"2025-08-21", month:"AGO", day:"21", year:"2025", venue:"St Andrews Old Course",       location:"St Andrews, Escocia", prize:"9.000.000", purse:"$9M", par:72, holes:72, status:"upcoming", desc:"El único major femenino disputado fuera de Estados Unidos." },
+    { id:6,  name:"The Players Championship", circuit:"pga",   date:"2025-03-13", month:"MAR", day:"13", year:"2025", venue:"TPC Sawgrass",                  location:"Ponte Vedra Beach, Florida, EE.UU.", prize:"25.000.000", purse:"$25M", par:72, holes:72, status:"completed", desc:"El quinto major no oficial, con el bolsillo de premios más grande del Tour." },
+    { id:7,  name:"Ryder Cup 2025",            circuit:"pga",   date:"2025-09-26", month:"SEP", day:"26", year:"2025", venue:"Bethpage Black",               location:"Nueva York, EE.UU.", prize:"-", purse:"Sin premio", par:71, holes:72, status:"upcoming", desc:"La gran competición por equipos entre Europa y Estados Unidos, celebrada cada dos años." },
+    { id:8,  name:"Genesis Scottish Open",     circuit:"dp",    date:"2025-07-10", month:"JUL", day:"10", year:"2025", venue:"The Renaissance Club",         location:"North Berwick, Escocia", prize:"9.000.000", purse:"$9M", par:70, holes:72, status:"upcoming", desc:"Co-sancionado entre el PGA Tour y el DP World Tour, preparatorio para The Open." },
+    { id:9,  name:"BMW PGA Championship",      circuit:"dp",    date:"2025-09-18", month:"SEP", day:"18", year:"2025", venue:"Wentworth Club",               location:"Virginia Water, Surrey, Inglaterra", prize:"9.000.000", purse:"$9M", par:72, holes:72, status:"upcoming", desc:"El evento más importante del DP World Tour, disputado en el icónico Wentworth Club." },
+    { id:10, name:"LIV Golf Jeddah",           circuit:"liv",   date:"2025-04-04", month:"ABR", day:"04", year:"2025", venue:"Royal Greens Golf Club",       location:"Jeddah, Arabia Saudí", prize:"25.000.000", purse:"$25M", par:70, holes:54, status:"upcoming", desc:"Una de las paradas del circuito LIV Golf en Arabia Saudí." },
+    { id:11, name:"Cognizant Classic",          circuit:"pga",  date:"2025-02-27", month:"FEB", day:"27", year:"2025", venue:"PGA National Resort",          location:"Palm Beach Gardens, Florida", prize:"9.000.000", purse:"$9M", par:70, holes:72, status:"completed", desc:"Torneo del PGA Tour disputado en el Palm Beach Gardens." },
+    { id:12, name:"Amundi Evian Championship", circuit:"lpga",  date:"2025-07-24", month:"JUL", day:"24", year:"2025", venue:"Evian Resort Golf Club",       location:"Évian-les-Bains, Francia", prize:"9.000.000", purse:"$9M", par:71, holes:72, status:"upcoming", desc:"Major femenino celebrado en los Alpes franceses con vistas al lago Lemán." },
+    { id:13, name:"Arnold Palmer Invitational",circuit:"pga",   date:"2025-03-06", month:"MAR", day:"06", year:"2025", venue:"Bay Hill Club & Lodge",        location:"Orlando, Florida, EE.UU.", prize:"20.000.000", purse:"$20M", par:70, holes:72, status:"completed", desc:"En homenaje al legendario Arnold Palmer, disputado en su club Bay Hill." },
+    { id:14, name:"Abu Dhabi HSBC Championship",circuit:"dp",   date:"2025-01-16", month:"ENE", day:"16", year:"2025", venue:"Yas Links Abu Dhabi",          location:"Abu Dabi, EAU", prize:"9.000.000", purse:"$9M", par:72, holes:72, status:"completed", desc:"Apertura del DP World Tour en el Yas Links, junto al circuito de Fórmula 1." },
+    { id:15, name:"LPGA Drive On Championship",circuit:"lpga",  date:"2025-03-20", month:"MAR", day:"20", year:"2025", venue:"Crown Colony Golf & CC",       location:"Fort Myers, Florida, EE.UU.", prize:"2.000.000", purse:"$2M", par:72, holes:54, status:"upcoming", desc:"Evento del circuito LPGA en Florida como parte de la serie Drive On." },
+];
+
+let currentCircuit = 'all';
+let currentPage    = 1;
+const PER_PAGE     = 8;
+
+function setCircuit(c, btn) {
+    currentCircuit = c; currentPage = 1;
+    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+}
+
+function applyFilters() {
+    const query = document.getElementById('tournSearch').value.toLowerCase();
+    const sort  = document.getElementById('tournSort').value;
+    let data = [...tournaments];
+
+    if (currentCircuit !== 'all') data = data.filter(t => t.circuit === currentCircuit);
+    if (query) data = data.filter(t =>
+        t.name.toLowerCase().includes(query) ||
+        t.venue.toLowerCase().includes(query) ||
+        t.location.toLowerCase().includes(query)
+    );
+
+    if (sort === 'name') data.sort((a,b) => a.name.localeCompare(b.name));
+    else if (sort === 'prize') data.sort((a,b) => parseInt(b.prize.replace(/\D/g,'')) - parseInt(a.prize.replace(/\D/g,'')));
+    else data.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+    renderList(data);
+}
+
+function renderList(data) {
+    const total = data.length;
+    const pages = Math.ceil(total / PER_PAGE);
+    if (currentPage > pages && pages > 0) currentPage = pages;
+    const start = (currentPage - 1) * PER_PAGE;
+    const paged = data.slice(start, start + PER_PAGE);
+
+    document.getElementById('resultCount').textContent = total;
+
+    const list = document.getElementById('tournList');
+    list.innerHTML = paged.length === 0
+        ? `<div style="text-align:center;padding:60px;color:var(--text-light);">
+               <div style="font-size:3rem;margin-bottom:16px;">🔍</div>
+               <h3 style="font-family:'Playfair Display',serif;margin-bottom:8px;color:var(--green-deep);">Sin resultados</h3>
+               <p>Prueba con otros filtros</p>
+           </div>`
+        : paged.map(t => tournCard(t)).join('');
+
+    renderPagination(pages, data);
+}
+
+const circuitLabels = { major:'⭐ Major', pga:'PGA Tour', lpga:'LPGA Tour', dp:'DP World Tour', liv:'LIV Golf' };
+const statusLabels  = { upcoming:'Próximo', completed:'Finalizado', live:'En Vivo' };
+const statusColors  = { upcoming:'var(--green-light)', completed:'var(--text-light)', live:'#dc2626' };
+
+function tournCard(t) {
+    return `
+    <div class="tournament-card fade-up visible" onclick="showTournDetail(${t.id})">
+        <div class="tournament-date-box">
+            <div class="tournament-date-month">${t.month}</div>
+            <div class="tournament-date-day">${t.day}</div>
+            <div class="tournament-date-year">${t.year}</div>
+        </div>
+        <div>
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+                <span class="tag ${t.circuit==='major'?'gold':''}">${circuitLabels[t.circuit]||t.circuit}</span>
+                <span style="font-size:.75rem;font-weight:600;color:${statusColors[t.status]}">${statusLabels[t.status]||t.status}</span>
+            </div>
+            <div class="tournament-name">${t.name}</div>
+            <div class="tournament-meta">
+                <div class="tournament-meta-item">🏟 <span>${t.venue}</span></div>
+                <div class="tournament-meta-item">📍 <span>${t.location}</span></div>
+                <div class="tournament-meta-item">⛳ <span>Par ${t.par} · ${t.holes} hoyos</span></div>
+            </div>
+        </div>
+        <div class="tournament-prize">
+            <span class="tournament-prize-amount">${t.purse}</span>
+            <span class="tournament-prize-label">Premio Total</span>
+        </div>
+    </div>`;
+}
+
+function renderPagination(pages, data) {
+    if (pages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+    let html = `<button class="page-btn prev" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>← Ant</button>`;
+    for (let i = 1; i <= pages; i++) {
+        html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    }
+    html += `<button class="page-btn next" onclick="goPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>Sig →</button>`;
+    document.getElementById('pagination').innerHTML = html;
+}
+
+function goPage(n) {
+    const query = document.getElementById('tournSearch').value.toLowerCase();
+    const sort  = document.getElementById('tournSort').value;
+    let data = [...tournaments];
+    if (currentCircuit !== 'all') data = data.filter(t => t.circuit === currentCircuit);
+    if (query) data = data.filter(t => t.name.toLowerCase().includes(query) || t.venue.toLowerCase().includes(query) || t.location.toLowerCase().includes(query));
+    if (sort === 'name') data.sort((a,b) => a.name.localeCompare(b.name));
+    else if (sort === 'prize') data.sort((a,b) => parseInt(b.prize) - parseInt(a.prize));
+    else data.sort((a,b) => new Date(a.date) - new Date(b.date));
+    const pages = Math.ceil(data.length / PER_PAGE);
+    if (n < 1 || n > pages) return;
+    currentPage = n;
+    renderList(data);
+    window.scrollTo({ top: 300, behavior:'smooth' });
+}
+
+function showTournDetail(id) {
+    const t = tournaments.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('tournModalContent').innerHTML = `
+        <div style="background:var(--green-deep);border-radius:10px;padding:24px;color:var(--ivory);text-align:center;margin-bottom:20px;">
+            <div style="font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">${circuitLabels[t.circuit]}</div>
+            <h2 style="font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:4px;">${t.name}</h2>
+            <p style="color:rgba(245,240,232,.65);font-family:'Cormorant Garamond',serif;font-size:1.1rem;">${t.month} ${t.day}, ${t.year}</p>
+        </div>
+        <div style="display:grid;gap:12px;">
+            <div style="display:flex;gap:12px;align-items:center;padding:14px;background:var(--ivory);border-radius:8px;">
+                <span style="font-size:1.5rem;">🏟</span>
+                <div><div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);">Sede</div><div style="font-weight:500;color:var(--text-dark);">${t.venue}</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;padding:14px;background:var(--ivory);border-radius:8px;">
+                <span style="font-size:1.5rem;">📍</span>
+                <div><div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);">Ubicación</div><div style="font-weight:500;color:var(--text-dark);">${t.location}</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div style="padding:14px;background:var(--ivory);border-radius:8px;text-align:center;">
+                    <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--green-mid);">${t.purse}</div>
+                    <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);">Premio Total</div>
+                </div>
+                <div style="padding:14px;background:var(--ivory);border-radius:8px;text-align:center;">
+                    <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--green-mid);">Par ${t.par}</div>
+                    <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);">${t.holes} Hoyos</div>
+                </div>
+            </div>
+            <div style="padding:16px;background:var(--ivory);border-radius:8px;">
+                <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);margin-bottom:8px;">Sobre el Torneo</div>
+                <p style="color:var(--text-mid);font-size:.9rem;line-height:1.6;">${t.desc}</p>
+            </div>
+        </div>`;
+    document.getElementById('tournModal').classList.add('open');
+}
+
+applyFilters();
+
+document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('mobile-open');
+});
+window.addEventListener('scroll', () => {
+    document.getElementById('navbar').style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(13,40,24,.4)' : 'none';
+});
+</script>
+</body>
+</html>

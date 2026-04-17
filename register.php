@@ -1,80 +1,94 @@
 <?php
-session_start();
-require 'db.php';
+// =========================================================
+// REGISTER.PHP - pagina de registro
+// =========================================================
+require_once 'register.php'; // siempre primero
 
-$error = "";
-$success = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = trim($_POST['nombre']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $confirm = $_POST['confirm'];
-
-    if (empty($nombre) || empty($email) || empty($password)) {
-        $error = "Por favor, rellena todos los campos.";
-    } elseif ($password !== $confirm) {
-        $error = "Las contraseñas no coinciden.";
-    } elseif (strlen($password) < 6) {
-        $error = "La contraseña debe tener al menos 6 caracteres.";
-    } else {
-        $check = mysqli_query($conn, "SELECT id FROM usuarios WHERE email='".mysqli_real_escape_string($conn,$email)."'");
-        if (mysqli_num_rows($check) > 0) {
-            $error = "Este email ya está registrado.";
-        } else {
-            $hash = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO usuarios (nombre, email, password) VALUES ('".mysqli_real_escape_string($conn,$nombre)."','".mysqli_real_escape_string($conn,$email)."','$hash')";
-            if (mysqli_query($conn, $sql)) {
-                $success = "¡Cuenta creada con éxito! Ya puedes iniciar sesión.";
-            } else {
-                $error = "Error al registrar. Inténtalo de nuevo.";
-            }
-        }
-    }
+$errors = [];
+if (!empty($_GET['errors'])) {
+    $errors = explode('|', urldecode($_GET['errors']));
 }
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro – Golf Club</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse — Golf Pro Apate</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛳</text></svg>">
 </head>
 <body class="auth-page">
-    <div class="auth-container">
-        <div class="auth-logo">⛳</div>
-        <h1 class="auth-title">Crear Cuenta</h1>
-        <p class="auth-sub">Únete al club</p>
 
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
-        <?php if ($success): ?>
-            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+<div class="auth-card register">
+    <div class="auth-logo">
+        <div class="auth-logo-icon">⛳</div>
+        <div class="auth-logo-text">Golf Pro <span>Apate</span></div>
+    </div>
+
+    <?php if ($loggedIn): ?>
+        <!-- ya esta logueado -->
+        <div class="alert alert-success">
+            ✅ Ya tienes una cuenta activa como <strong><?= $username ?></strong>
+        </div>
+        <div style="text-align:center; margin-top:16px; display:flex; flex-direction:column; gap:10px;">
+            <a href="index.php" class="btn btn-primary form-btn">Ir al inicio →</a>
+            <a href="logout.php" class="btn btn-outline form-btn">Cerrar sesión y crear otra cuenta</a>
+        </div>
+
+    <?php else: ?>
+        <h2 class="auth-title">Crear cuenta</h2>
+        <p class="auth-sub">Únete a la comunidad de golf de élite</p>
+
+        <?php if (!empty($errors)): ?>
+        <div class="alert alert-error">
+            <?php foreach ($errors as $e): ?>
+                <div>⚠️ <?= htmlspecialchars($e) ?></div>
+            <?php endforeach; ?>
+        </div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST" action="process_register.php">
             <div class="form-group">
-                <label>Nombre completo</label>
-                <input type="text" name="nombre" placeholder="Tu nombre" required>
+                <label class="form-label" for="full_name">Nombre completo</label>
+                <input class="form-input" type="text" id="full_name" name="full_name"
+                       placeholder="John Doe"
+                       value="<?= htmlspecialchars($_POST['full_name'] ?? '') ?>"
+                       required autofocus>
             </div>
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" name="email" placeholder="correo@ejemplo.com" required>
+                <label class="form-label" for="username">Nombre de usuario</label>
+                <input class="form-input" type="text" id="username" name="username"
+                       placeholder="johndoe_golf"
+                       value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required>
             </div>
             <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" name="password" placeholder="Mínimo 6 caracteres" required>
+                <label class="form-label" for="email">Correo electrónico</label>
+                <input class="form-input" type="email" id="email" name="email"
+                       placeholder="tu@email.com"
+                       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
             </div>
             <div class="form-group">
-                <label>Confirmar contraseña</label>
-                <input type="password" name="confirm" placeholder="Repite la contraseña" required>
+                <label class="form-label" for="password">Contraseña</label>
+                <input class="form-input" type="password" id="password" name="password"
+                       placeholder="Mínimo 6 caracteres" required>
             </div>
-            <button type="submit" class="btn-auth">Registrarse</button>
+            <div class="form-group">
+                <label class="form-label" for="confirm_password">Confirmar contraseña</label>
+                <input class="form-input" type="password" id="confirm_password" name="confirm_password"
+                       placeholder="Repite tu contraseña" required>
+            </div>
+            <button type="submit" class="btn btn-primary form-btn">Crear Cuenta →</button>
         </form>
 
-        <p class="auth-link">¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
-        <p class="auth-link"><a href="index.php">← Volver al inicio</a></p>
-    </div>
+        <div class="auth-divider">o</div>
+        <div class="auth-link-wrap">
+            ¿Ya tienes cuenta? <a href="login.php" class="auth-link">Iniciar sesión</a>
+        </div>
+        <a href="index.php" class="back-link">← Volver al inicio</a>
+    <?php endif; ?>
+</div>
+
 </body>
 </html>

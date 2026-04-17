@@ -1,0 +1,22 @@
+
+Copiar
+
+<?php
+// =========================================================
+// SESSION.PHP - manejo de sesiones
+// incluir este archivo en TODAS las paginas
+// Hecho por: alumno SMIX 2oB
+// =========================================================
+// NOTA: hay que incluirlo antes de cualquier HTML
+//       si no sale el error de "headers already sent"
+// =========================================================
+ 
+session_start();
+ 
+// variables de sesion disponibles en todas las paginas
+$loggedIn  = isset($_SESSION['user_id']);
+$username  = $loggedIn ? htmlspecialchars($_SESSION['username'])  : '';
+$fullName  = $loggedIn ? htmlspecialchars($_SESSION['full_name']) : '';
+$userId    = $loggedIn ? (int)$_SESSION['user_id'] : 0;
+
+

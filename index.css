@@ -1,0 +1,409 @@
+/* =========================================================
+   INDEX.CSS - estilos solo para la pagina de inicio
+   Este archivo solo lo usa index.html
+   Hecho por: alumno SMIX 2oB
+   ========================================================= */
+
+
+/* =========================================================
+   HERO - la parte grande con el fondo verde
+   esta solo en index.html
+   ========================================================= */
+
+.hero {
+    background-color: #1b5e20;
+    /* degradado que encontre en un tutorial de youtube */
+    background-image: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #1b5e20 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 60px; /* para que no tape el navbar de arriba */
+    padding-bottom: 40px;
+}
+
+/* estas clases las pone el HTML pero no las necesito aqui */
+.hero-bg { display: none; }
+.hero-pattern { display: none; }
+
+.hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    width: 100%;
+}
+
+.hero-text {
+    color: white;
+}
+
+/* el textito pequeno de arriba del titulo */
+.hero-eyebrow {
+    color: #ffd700;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.hero h1 {
+    font-size: 55px;
+    font-family: "Times New Roman", serif; /* mas elegante que arial */
+    color: white;
+    margin-bottom: 20px;
+    line-height: 1.1;
+}
+
+/* la palabra apate en dorado */
+.hero h1 em {
+    color: #ffd700;
+    font-style: normal;
+    display: block;
+}
+
+.hero-desc {
+    font-size: 18px;
+    color: #c8e6c9;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* los dos botones del hero */
+.hero-btns {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* los 3 numeritos de estadisticas */
+.hero-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #4caf50;
+}
+
+.hero-stat-num {
+    display: block;
+    font-size: 38px;
+    color: #ffd700;
+    font-family: "Times New Roman", serif;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.hero-stat-label {
+    font-size: 11px;
+    color: #a5d6a7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 3px;
+    display: block;
+}
+
+/* el grafico de la derecha con el circulo girando */
+.hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.hero-circle-outer {
+    width: 380px;
+    height: 380px;
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* aprendi las animaciones en youtube */
+    animation: girar 30s linear infinite;
+}
+
+.hero-circle-inner {
+    width: 280px;
+    height: 280px;
+    background-color: #2e7d32;
+    border: 2px solid rgba(255,215,0,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px;
+    animation: girar 30s linear infinite reverse; /* al reves para que quede chulo */
+}
+
+/* los puntitos brillantes */
+.hero-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #ffd700;
+    border-radius: 50%;
+    animation: parpadear 2s ease-in-out infinite;
+}
+
+.hero-dot:nth-child(1) { top: 12%; right: 22%; }
+.hero-dot:nth-child(2) { bottom: 18%; left: 12%; animation-delay: 0.7s; }
+.hero-dot:nth-child(3) { top: 48%; right: 4%; animation-delay: 1.4s; }
+
+/* keyframes de las animaciones */
+@keyframes girar {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes parpadear {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.8); }
+}
+
+
+/* =========================================================
+   TARJETAS DE ACCESO RAPIDO (las 3 de la seccion de abajo)
+   ========================================================= */
+
+/* reutilizo player-card pero con estilo de link */
+.quick-card {
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    padding: 36px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    /* NOTE para mi mismo: acordarse de quitar el color azul de los links */
+    color: inherit;
+}
+
+.quick-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.12);
+    border-color: #4caf50;
+}
+
+.quick-card-icon {
+    font-size: 50px;
+    margin-bottom: 18px;
+    display: block;
+}
+
+.quick-card h3 {
+    font-family: "Times New Roman", serif;
+    font-size: 22px;
+    color: #1b5e20;
+    margin-bottom: 10px;
+}
+
+.quick-card p {
+    color: #888888;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+}
+
+.quick-card-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: #1b5e20;
+    color: #ffd700;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* version dorada para la tienda */
+.quick-card-btn.gold-btn {
+    background-image: linear-gradient(135deg, #ffd700, #ffec00);
+    color: #1b5e20;
+}
+
+
+/* =========================================================
+   SECCION TOP RANKED (los 3 destacados)
+   ========================================================= */
+
+/* las tarjetas de jugador destacado - las hice copiando player-card */
+.featured-player-card {
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.featured-player-avatar {
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2e7d32;
+    background-image: linear-gradient(to bottom, #2e7d32, #1b5e20);
+}
+
+.featured-player-letter {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background-color: rgba(255,215,0,0.15);
+    border: 2px solid rgba(255,215,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Times New Roman", serif;
+    font-size: 30px;
+    color: #ffd700;
+}
+
+/* la medalla del ranking que se superpone */
+.featured-rank-badge {
+    position: absolute;
+    top: 148px; /* justo encima del borde */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: #ffd700;
+    color: #1b5e20;
+    border: 2px solid #b8860b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 13px;
+    font-family: "Times New Roman", serif;
+    z-index: 2;
+}
+
+.featured-player-info {
+    padding: 28px 18px 18px 18px; /* mas padding arriba por la medalla */
+    text-align: center;
+}
+
+.featured-player-name {
+    font-family: "Times New Roman", serif;
+    font-size: 20px;
+    color: #1b5e20;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.featured-player-country {
+    font-size: 13px;
+    color: #888888;
+    margin-bottom: 14px;
+}
+
+.featured-player-stats {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 10px;
+}
+
+.featured-stat-val {
+    display: block;
+    font-family: "Times New Roman", serif;
+    font-size: 17px;
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.featured-stat-key {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #999999;
+    letter-spacing: 0.5px;
+}
+
+/* la tarjeta especial del proximo major (verde oscuro) */
+.next-major-card {
+    background-color: #1b5e20;
+    border-radius: 6px;
+    padding: 36px;
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.next-major-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+}
+
+.next-major-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffd700;
+    margin-bottom: 8px;
+}
+
+.next-major-title {
+    font-family: "Times New Roman", serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.next-major-info {
+    color: rgba(255,255,255,0.65);
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   RESPONSIVE SOLO DE INDEX
+   ========================================================= */
+
+@media (max-width: 1024px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .hero-visual {
+        display: none;
+    }
+    .hero-stats {
+        justify-content: center;
+    }
+    .hero-btns {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 36px;
+    }
+    .hero-stats {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 28px;
+    }
+}
+
+/* fin de index.css */
