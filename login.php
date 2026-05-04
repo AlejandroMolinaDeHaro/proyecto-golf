@@ -1,84 +1,69 @@
 <?php
-// =========================================================
-// LOGIN.PHP - pagina de inicio de sesion
-// =========================================================
-require_once 'session.php';
+session_start();
+require 'db.php';
 
+$error = "";
 
-// si ya estas logueado mostramos aviso pero NO redirigimos
-// antes redirigía y eso confundia al usuario
+if (isset($_SESSION['usuario_id'])) {
+    header("Location: index.php");
+    exit;
+}
 
-$errors = [];
-if (!empty($_GET['errors'])) {
-    $errors = explode('|', urldecode($_GET['errors']));
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+
+    if (empty($email) || empty($password)) {
+        $error = "Por favor, rellena todos los campos.";
+    } else {
+        $sql = "SELECT * FROM usuarios WHERE email='".mysqli_real_escape_string($conn,$email)."'";
+        $result = mysqli_query($conn, $sql);
+        if ($row = mysqli_fetch_assoc($result)) {
+            if (password_verify($password, $row['password'])) {
+                $_SESSION['usuario_id'] = $row['id'];
+                $_SESSION['usuario_nombre'] = $row['nombre'];
+                header("Location: index.php");
+                exit;
+            } else {
+                $error = "Contraseña incorrecta.";
+            }
+        } else {
+            $error = "No existe ninguna cuenta con ese email.";
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión — Golf Pro Apate</title>
+    <title>Iniciar Sesión – Golf Club</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="auth.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛳</text></svg>">
 </head>
 <body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-logo">⛳</div>
+        <h1 class="auth-title">Bienvenido</h1>
+        <p class="auth-sub">Inicia sesión en tu cuenta</p>
 
-<div class="auth-card">
-    <!-- Logo -->
-    <div class="auth-logo">
-        <div class="auth-logo-icon">⛳</div>
-        <div class="auth-logo-text">Golf Pro <span>Apate</span></div>
-    </div>
-
-    <?php if ($loggedIn): ?>
-        <!-- ya esta logueado -->
-        <div class="alert alert-success">
-            ✅ Ya tienes sesión iniciada como <strong><?= $username ?></strong>
-        </div>
-        <div style="text-align:center; margin-top: 16px; display:flex; flex-direction:column; gap:10px;">
-            <a href="index.html" class="btn btn-primary form-btn">Ir al inicio →</a>
-            <a href="logout.php" class="btn btn-outline form-btn">Cerrar sesión actual</a>
-        </div>
-
-    <?php else: ?>
-        <h2 class="auth-title">Bienvenido de nuevo</h2>
-        <p class="auth-sub">Inicia sesión para acceder a tu cuenta</p>
-
-        <!-- Errores del login -->
-        <?php if (!empty($errors)): ?>
-        <div class="alert alert-error">
-            <?php foreach ($errors as $e): ?>
-                <div>⚠️ <?= htmlspecialchars($e) ?></div>
-            <?php endforeach; ?>
-        </div>
+        <?php if ($error): ?>
+            <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
-        <!-- Formulario -->
-        <form method="POST" action="process_login.php">
+        <form method="POST">
             <div class="form-group">
-                <label class="form-label" for="email">Correo electrónico</label>
-                <input class="form-input" type="email" id="email" name="email" 
-                       placeholder="tu@email.com" 
-                       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                       required autofocus>
+                <label>Email</label>
+                <input type="email" name="email" placeholder="correo@ejemplo.com" required>
             </div>
             <div class="form-group">
-                <label class="form-label" for="password">Contraseña</label>
-                <input class="form-input" type="password" id="password" name="password"
-                       placeholder="••••••••" required>
+                <label>Contraseña</label>
+                <input type="password" name="password" placeholder="Tu contraseña" required>
             </div>
-            <button type="submit" class="btn btn-primary form-btn">Iniciar Sesión →</button>
+            <button type="submit" class="btn-auth">Iniciar Sesión</button>
         </form>
 
-        <div class="auth-divider">o</div>
-        <div class="auth-link-wrap">
-            ¿No tienes cuenta? <a href="register.php" class="auth-link">Regístrate gratis</a>
-        </div>
-        <a href="index.php" class="back-link">← Volver al inicio</a>
-    <?php endif; ?>
-</div>
-
+        <p class="auth-link">¿No tienes cuenta? <a href="register.php">Regístrate</a></p>
+        <p class="auth-link"><a href="index.php">← Volver al inicio</a></p>
+    </div>
 </body>
 </html>

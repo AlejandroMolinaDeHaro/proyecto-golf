@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golf Club – El mundo del golf</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<header class="navbar">
+    <div class="nav-brand">⛳ Golf Club</div>
+    <nav class="nav-links">
+        <a href="#jugadores">Jugadores</a>
+        <a href="#torneos">Torneos</a>
+        <a href="#tienda">Tienda</a>
+        <a href="login.php" class="btn-nav-login">Iniciar sesión</a>
+        <a href="register.php" class="btn-nav-register">Registrarse</a>
+    </nav>
+    <!-- Menú hamburguesa para móvil -->
+    <button class="hamburger" onclick="toggleMenu()" id="hamburger">☰</button>
+</header>
+
+<!-- Menú móvil -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#jugadores" onclick="toggleMenu()">Jugadores</a>
+    <a href="#torneos" onclick="toggleMenu()">Torneos</a>
+    <a href="#tienda" onclick="toggleMenu()">Tienda</a>
+    <a href="login.php">Iniciar sesión</a>
+    <a href="register.php">Registrarse</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <p class="hero-tag">Temporada 2025</p>
+        <h1 class="hero-title">El Mundo<br><em>del Golf</em></h1>
+        <p class="hero-desc">Jugadores, torneos y todo lo que necesitas para jugar al mejor nivel.</p>
+        <a href="#jugadores" class="hero-btn">Explorar</a>
+    </div>
+    <div class="hero-balls">
+        <div class="ball b1"></div>
+        <div class="ball b2"></div>
+        <div class="ball b3"></div>
+    </div>
+</section>
+
+<!-- ===== JUGADORES ===== -->
+<section id="jugadores" class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Jugadores</h2>
+            <p class="section-sub">Los mejores del ranking mundial</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('hombres', this)">🏌️ Hombres</button>
+            <button class="tab" onclick="showTab('mujeres', this)">🏌️‍♀️ Mujeres</button>
+        </div>
+
+        <!-- Hombres -->
+        <div id="hombres" class="tab-content active">
+            <div class="players-grid">
+
+                <div class="player-card">
+                    <div class="player-rank">#1</div>
+                    <div class="player-avatar">S</div>
+                    <h3 class="player-name">Scottie Scheffler</h3>
+                    <p class="player-country">🇺🇸 EE.UU.</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">68.4</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">72.1%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card">
+                    <div class="player-rank">#2</div>
+                    <div class="player-avatar">R</div>
+                    <h3 class="player-name">Rory McIlroy</h3>
+                    <p class="player-country">🇬🇧 Irlanda del Norte</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">69.1</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">67.3%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card">
+                    <div class="player-rank">#3</div>
+                    <div class="player-avatar">J</div>
+                    <h3 class="player-name">Jon Rahm</h3>
+                    <p class="player-country">🇪🇸 España</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">69.5</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">65.8%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card">
+                    <div class="player-rank">#4</div>
+                    <div class="player-avatar">V</div>
+                    <h3 class="player-name">Viktor Hovland</h3>
+                    <p class="player-country">🇳🇴 Noruega</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">69.7</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">64.2%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card">
+                    <div class="player-rank">#5</div>
+                    <div class="player-avatar">X</div>
+                    <h3 class="player-name">Xander Schauffele</h3>
+                    <p class="player-country">🇺🇸 EE.UU.</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">69.9</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">63.5%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card">
+                    <div class="player-rank">#6</div>
+                    <div class="player-avatar">P</div>
+                    <h3 class="player-name">Patrick Cantlay</h3>
+                    <p class="player-country">🇺🇸 EE.UU.</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">70.1</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">62.9%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mujeres -->
+        <div id="mujeres" class="tab-content">
+            <div class="players-grid">
+
+                <div class="player-card female">
+                    <div class="player-rank">#1</div>
+                    <div class="player-avatar">N</div>
+                    <h3 class="player-name">Nelly Korda</h3>
+                    <p class="player-country">🇺🇸 EE.UU.</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">69.2</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">73.5%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card female">
+                    <div class="player-rank">#2</div>
+                    <div class="player-avatar">C</div>
+                    <h3 class="player-name">Celine Boutier</h3>
+                    <p class="player-country">🇫🇷 Francia</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">69.8</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">70.1%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card female">
+                    <div class="player-rank">#3</div>
+                    <div class="player-avatar">L</div>
+                    <h3 class="player-name">Lydia Ko</h3>
+                    <p class="player-country">🇳🇿 Nueva Zelanda</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">70.0</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">68.7%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card female">
+                    <div class="player-rank">#4</div>
+                    <div class="player-avatar">L</div>
+                    <h3 class="player-name">Lilia Vu</h3>
+                    <p class="player-country">🇺🇸 EE.UU.</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">70.3</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">67.2%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card female">
+                    <div class="player-rank">#5</div>
+                    <div class="player-avatar">B</div>
+                    <h3 class="player-name">Brooke Henderson</h3>
+                    <p class="player-country">🇨🇦 Canadá</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">70.5</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">65.9%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+                <div class="player-card female">
+                    <div class="player-rank">#6</div>
+                    <div class="player-avatar">A</div>
+                    <h3 class="player-name">Atthaya Thitikul</h3>
+                    <p class="player-country">🇹🇭 Tailandia</p>
+                    <div class="player-stats">
+                        <div class="stat"><span class="stat-val">70.7</span><span class="stat-lbl">Avg. golpes</span></div>
+                        <div class="stat"><span class="stat-val">64.4%</span><span class="stat-lbl">Fairways</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== TORNEOS ===== -->
+<section id="torneos" class="section section-dark">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title light">Torneos 2025</h2>
+            <p class="section-sub light">Calendario de la temporada</p>
+        </div>
+        <div class="torneos-list">
+
+            <div class="torneo-card">
+                <div class="torneo-left">
+                    <span class="torneo-badge badge-done">✅ Finalizado</span>
+                    <h3 class="torneo-name">The Masters</h3>
+                    <p class="torneo-lugar">📍 Augusta, Georgia – EE.UU.</p>
+                </div>
+                <div class="torneo-mid">
+                    <span class="torneo-fecha">📅 10–13 Abr 2025</span>
+                    <span class="torneo-tipo">Major</span>
+                </div>
+                <div class="torneo-right">
+                    <span class="torneo-prize">💰 $18.000.000</span>
+                </div>
+            </div>
+
+            <div class="torneo-card">
+                <div class="torneo-left">
+                    <span class="torneo-badge badge-next">🔜 Próximo</span>
+                    <h3 class="torneo-name">PGA Championship</h3>
+                    <p class="torneo-lugar">📍 Quail Hollow – Carolina del Norte</p>
+                </div>
+                <div class="torneo-mid">
+                    <span class="torneo-fecha">📅 15–18 May 2025</span>
+                    <span class="torneo-tipo">Major</span>
+                </div>
+                <div class="torneo-right">
+                    <span class="torneo-prize">💰 $19.000.000</span>
+                </div>
+            </div>
+
+            <div class="torneo-card">
+                <div class="torneo-left">
+                    <span class="torneo-badge badge-next">🔜 Próximo</span>
+                    <h3 class="torneo-name">US Open</h3>
+                    <p class="torneo-lugar">📍 Oakmont CC – Pennsylvania</p>
+                </div>
+                <div class="torneo-mid">
+                    <span class="torneo-fecha">📅 12–15 Jun 2025</span>
+                    <span class="torneo-tipo">Major</span>
+                </div>
+                <div class="torneo-right">
+                    <span class="torneo-prize">💰 $21.500.000</span>
+                </div>
+            </div>
+
+            <div class="torneo-card">
+                <div class="torneo-left">
+                    <span class="torneo-badge badge-next">🔜 Próximo</span>
+                    <h3 class="torneo-name">The Open Championship</h3>
+                    <p class="torneo-lugar">📍 Royal Portrush – Irlanda</p>
+                </div>
+                <div class="torneo-mid">
+                    <span class="torneo-fecha">📅 17–20 Jul 2025</span>
+                    <span class="torneo-tipo">Major</span>
+                </div>
+                <div class="torneo-right">
+                    <span class="torneo-prize">💰 $17.000.000</span>
+                </div>
+            </div>
+
+            <div class="torneo-card">
+                <div class="torneo-left">
+                    <span class="torneo-badge badge-done">✅ Finalizado</span>
+                    <h3 class="torneo-name">Augusta National Women's Amateur</h3>
+                    <p class="torneo-lugar">📍 Augusta – EE.UU.</p>
+                </div>
+                <div class="torneo-mid">
+                    <span class="torneo-fecha">📅 2–5 Abr 2025</span>
+                    <span class="torneo-tipo">Femenino</span>
+                </div>
+                <div class="torneo-right">
+                    <span class="torneo-prize">💰 —</span>
+                </div>
+            </div>
+
+            <div class="torneo-card">
+                <div class="torneo-left">
+                    <span class="torneo-badge badge-next">🔜 Próximo</span>
+                    <h3 class="torneo-name">AIG Women's Open</h3>
+                    <p class="torneo-lugar">📍 Carnoustie – Escocia</p>
+                </div>
+                <div class="torneo-mid">
+                    <span class="torneo-fecha">📅 7–10 Ago 2025</span>
+                    <span class="torneo-tipo">Major Femenino</span>
+                </div>
+                <div class="torneo-right">
+                    <span class="torneo-prize">💰 $9.000.000</span>
+                </div>
+            </div>
+
+            <div class="torneo-card">
+                <div class="torneo-left">
+                    <span class="torneo-badge badge-next">🔜 Próximo</span>
+                    <h3 class="torneo-name">Ryder Cup</h3>
+                    <p class="torneo-lugar">📍 Adare Manor – Irlanda</p>
+                </div>
+                <div class="torneo-mid">
+                    <span class="torneo-fecha">📅 26–28 Sep 2025</span>
+                    <span class="torneo-tipo">Equipo</span>
+                </div>
+                <div class="torneo-right">
+                    <span class="torneo-prize">💰 —</span>
+                </div>
+            </div>
+
+            <div class="torneo-card">
+                <div class="torneo-left">
+                    <span class="torneo-badge badge-next">🔜 Próximo</span>
+                    <h3 class="torneo-name">DP World Tour Championship</h3>
+                    <p class="torneo-lugar">📍 Dubai – EAU</p>
+                </div>
+                <div class="torneo-mid">
+                    <span class="torneo-fecha">📅 18–21 Dic 2025</span>
+                    <span class="torneo-tipo">Tour</span>
+                </div>
+                <div class="torneo-right">
+                    <span class="torneo-prize">💰 $10.000.000</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== TIENDA ===== -->
+<section id="tienda" class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Tienda</h2>
+            <p class="section-sub">Equípate con lo mejor</p>
+        </div>
+
+        <div class="shop-grid">
+
+            <div class="product-card">
+                <div class="product-icon">🏌️</div>
+                <span class="product-cat">Palos</span>
+                <h3 class="product-name">Driver TaylorMade Qi10</h3>
+                <p class="product-desc">El driver más vendido de la temporada.</p>
+                <div class="product-footer">
+                    <span class="product-price">€549</span>
+                    <a href="login.php" class="btn-buy-login">Comprar</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">🥊</div>
+                <span class="product-cat">Palos</span>
+                <h3 class="product-name">Set de Hierros Callaway</h3>
+                <p class="product-desc">Precisión y control en cada golpe.</p>
+                <div class="product-footer">
+                    <span class="product-price">899€</span>
+                    <a href="login.php" class="btn-buy-login">Comprar</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">⛳</div>
+                <span class="product-cat">Pelotas</span>
+                <h3 class="product-name">Pelotas Pro V1x (docena)</h3>
+                <p class="product-desc">Las favoritas de los pros en el tour.</p>
+                <div class="product-footer">
+                    <span class="product-price">€59</span>
+                    <a href="login.php" class="btn-buy-login">Comprar</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">🎽</div>
+                <span class="product-cat">Ropa</span>
+                <h3 class="product-name">Polo Nike Dri-FIT</h3>
+                <p class="product-desc">Comodidad y estilo en el campo.</p>
+                <div class="product-footer">
+                    <span class="product-price">€79</span>
+                    <a href="login.php" class="btn-buy-login">Comprar</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">👟</div>
+                <span class="product-cat">Calzado</span>
+                <h3 class="product-name">Zapatos FootJoy Pro SL</h3>
+                <p class="product-desc">Agarre y comodidad durante 18 hoyos.</p>
+                <div class="product-footer">
+                    <span class="product-price">€189</span>
+                    <a href="login.php" class="btn-buy-login">Comprar</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">🎒</div>
+                <span class="product-cat">Accesorios</span>
+                <h3 class="product-name">Bolsa de Golf Titleist</h3>
+                <p class="product-desc">Ligera y con múltiples compartimentos.</p>
+                <div class="product-footer">
+                    <span class="product-price">€329</span>
+                    <a href="login.php" class="btn-buy-login">Comprar</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">🧢</div>
+                <span class="product-cat">Ropa</span>
+                <h3 class="product-name">Gorra Callaway Tour</h3>
+                <p class="product-desc">Protección solar con estilo.</p>
+                <div class="product-footer">
+                    <span class="product-price">€35</span>
+                    <a href="login.php" class="btn-buy-login">Comprar</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-icon">🔭</div>
+                <span class="product-cat">Accesorios</span>
+                <h3 class="product-name">Rangefinder Bushnell</h3>
+                <p class="product-desc">Mide distancias con precisión láser.</p>
+                <div class="product-footer">
+                    <span class="product-price">€249</span>
+                    <a href="login.php" class="btn-buy-login">Comprar</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="shop-notice">
+            <p>🔒 <a href="login.php">Inicia sesión</a> o <a href="register.php">regístrate</a> para poder comprar productos.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="footer-inner">
+        <p class="footer-logo">⛳ Golf Club</p>
+        <p class="footer-copy">© 2025 Golf Club. Todos los derechos reservados.</p>
+        <p class="footer-user">
+            <a href="login.php">Iniciar sesión</a> · <a href="register.php">Registrarse</a>
+        </p>
+    </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // Cambiar tabs jugadores
+    function showTab(tab, btn) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+        document.getElementById(tab).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // Menú hamburguesa móvil
+    function toggleMenu() {
+        const menu = document.getElementById('mobileMenu');
+        menu.classList.toggle('open');
+    }
+
+    // Cerrar menú al hacer scroll
+    window.addEventListener('scroll', () => {
+        document.getElementById('mobileMenu').classList.remove('open');
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Navbar se oscurece al hacer scroll
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('.navbar');
+        nav.style.boxShadow = window.scrollY > 10
+            ? '0 4px 20px rgba(0,0,0,0.5)'
+            : '0 2px 12px rgba(0,0,0,0.3)';
+    });
+</script>
+
+</body>
+</html>

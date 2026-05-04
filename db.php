@@ -1,26 +1,28 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $host = "localhost";
 $user = "root";
-$password = "";
-$database = "golf_web";
+$pass = ""; 
+$db   = "progolf"; 
 
-$conn = mysqli_connect($host, $user, $password);
+$conn = mysqli_connect($host, $user, $pass);
 
 if (!$conn) {
-    die("Error de conexión: " . mysqli_connect_error());
+    die("Fallo de conexión: " . mysqli_connect_error());
 }
 
-// Crear base de datos si no existe
-mysqli_query($conn, "CREATE DATABASE IF NOT EXISTS $database");
-mysqli_select_db($conn, $database);
+mysqli_query($conn, "CREATE DATABASE IF NOT EXISTS $db");
+mysqli_select_db($conn, $db);
 
-// Crear tabla usuarios
-$sql = "CREATE TABLE IF NOT EXISTS usuarios (
+$sql_table = "CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
-mysqli_query($conn, $sql);
+mysqli_query($conn, $sql_table);
 ?>
