@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GolfPro – El mundo del golf</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar">
+        <div class="nav-brand">⛳ GolfPro</div>
+        <nav class="nav-links">
+            <a href="#jugadores">Jugadores</a>
+            <a href="#torneos">Torneos</a>
+            <a href="#tienda">Tienda</a>
+            <a href="login.php" class="btn-nav-login">Iniciar sesión</a>
+            <a href="register.php" class="btn-nav-register">Registrarse</a>
+        </nav>
+        <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#jugadores" onclick="toggleMenu()">Jugadores</a>
+        <a href="#torneos" onclick="toggleMenu()">Torneos</a>
+        <a href="#tienda" onclick="toggleMenu()">Tienda</a>
+        <a href="login.php">Iniciar sesión</a>
+        <a href="register.php">Registrarse</a>
+    </div>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-tag">Temporada 2025</p>
+            <h1 class="hero-title">El Mundo<br><em>del Golf</em></h1>
+            <p class="hero-desc">Jugadores, torneos y todo lo que necesitas para jugar al mejor nivel.</p>
+            <a href="#jugadores" class="hero-btn">Explorar</a>
+        </div>
+        <div class="hero-balls">
+            <div class="ball b1"></div>
+            <div class="ball b2"></div>
+            <div class="ball b3"></div>
+        </div>
+    </section>
+
+    <!-- ===== JUGADORES ===== -->
+    <section id="jugadores" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Jugadores</h2>
+                <p class="section-sub">Los mejores del ranking mundial</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="cambiarTab('hombres', this)">🏌️ Hombres</button>
+                <button class="tab" onclick="cambiarTab('mujeres', this)">🏌️‍♀️ Mujeres</button>
+            </div>
+
+            <!-- SISTEMA DE CERCA -->
+            <div class="cerca-bar">
+                <div class="cerca-group">
+                    <label class="cerca-label">🔍 Buscar jugador</label>
+                    <input type="text" id="buscadorJugador" class="cerca-input" placeholder="Nombre o país..."
+                        oninput="renderJugadores()">
+                </div>
+                <div class="cerca-group">
+                    <label class="cerca-label">🌍 País</label>
+                    <select id="filtroPais" class="cerca-select" onchange="renderJugadores()">
+                        <option value="">Todos los países</option>
+                    </select>
+                </div>
+                <div class="cerca-group">
+                    <label class="cerca-label">↕️ Ordenar</label>
+                    <select id="ordenJugador" class="cerca-select" onchange="renderJugadores()">
+                        <option value="rank">Ranking</option>
+                        <option value="nombre">Nombre A–Z</option>
+                        <option value="golpes_asc">Menos golpes</option>
+                        <option value="golpes_desc">Más golpes</option>
+                        <option value="fairway">Mejor fairway</option>
+                    </select>
+                </div>
+                <button class="cerca-reset" onclick="resetFiltrosJugadores()">✕ Limpiar</button>
+            </div>
+
+            <p class="resultados-info" id="infoJugadores"></p>
+            <div id="gridJugadores" class="players-grid"></div>
+            <div class="paginacion" id="paginacionJugadores"></div>
+        </div>
+    </section>
+
+    <!-- ===== TORNEOS ===== -->
+    <section id="torneos" class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title light">Torneos 2025</h2>
+                <p class="section-sub light">Calendario de la temporada</p>
+            </div>
+
+            <!-- SISTEMA DE CERCA -->
+            <div class="cerca-bar cerca-bar-dark">
+                <div class="cerca-group">
+                    <label class="cerca-label light">🔍 Buscar torneo</label>
+                    <input type="text" id="buscadorTorneo" class="cerca-input dark" placeholder="Nombre o lugar..."
+                        oninput="renderTorneos()">
+                </div>
+                <div class="cerca-group">
+                    <label class="cerca-label light">📌 Estado</label>
+                    <select id="filtroEstado" class="cerca-select dark" onchange="renderTorneos()">
+                        <option value="">Todos</option>
+                        <option value="finalizado">✅ Finalizados</option>
+                        <option value="proximo">🔜 Próximos</option>
+                    </select>
+                </div>
+                <div class="cerca-group">
+                    <label class="cerca-label light">🏆 Tipo</label>
+                    <select id="filtroTipo" class="cerca-select dark" onchange="renderTorneos()">
+                        <option value="">Todos los tipos</option>
+                        <option value="Major">Major</option>
+                        <option value="Major Femenino">Major Femenino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Equipo">Equipo</option>
+                        <option value="Tour">Tour</option>
+                    </select>
+                </div>
+                <div class="cerca-group">
+                    <label class="cerca-label light">↕️ Ordenar</label>
+                    <select id="ordenTorneo" class="cerca-select dark" onchange="renderTorneos()">
+                        <option value="fecha">Por fecha</option>
+                        <option value="nombre">Nombre A–Z</option>
+                        <option value="premio_desc">Mayor premio</option>
+                        <option value="premio_asc">Menor premio</option>
+                    </select>
+                </div>
+                <button class="cerca-reset" onclick="resetFiltrosTorneos()">✕ Limpiar</button>
+            </div>
+
+            <p class="resultados-info light" id="infoTorneos"></p>
+            <div id="listaTorneos" class="torneos-list"></div>
+            <div class="paginacion paginacion-dark" id="paginacionTorneos"></div>
+        </div>
+    </section>
+
+    <!-- ===== TIENDA ===== -->
+    <section id="tienda" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Tienda</h2>
+                <p class="section-sub">Equípate con lo mejor</p>
+            </div>
+
+            <!-- SISTEMA DE CERCA -->
+            <div class="cerca-bar">
+                <div class="cerca-group">
+                    <label class="cerca-label">🔍 Buscar producto</label>
+                    <input type="text" id="buscadorProducto" class="cerca-input" placeholder="Nombre del producto..."
+                        oninput="renderProductos()">
+                </div>
+                <div class="cerca-group">
+                    <label class="cerca-label">🏷️ Categoría</label>
+                    <select id="filtroCategoria" class="cerca-select" onchange="renderProductos()">
+                        <option value="">Todas</option>
+                        <option value="Palos">Palos</option>
+                        <option value="Pelotas">Pelotas</option>
+                        <option value="Ropa">Ropa</option>
+                        <option value="Calzado">Calzado</option>
+                        <option value="Accesorios">Accesorios</option>
+                    </select>
+                </div>
+                <div class="cerca-group">
+                    <label class="cerca-label">💶 Precio máx.</label>
+                    <select id="filtroPreco" class="cerca-select" onchange="renderProductos()">
+                        <option value="">Sin límite</option>
+                        <option value="50">Hasta €50</option>
+                        <option value="100">Hasta €100</option>
+                        <option value="200">Hasta €200</option>
+                        <option value="400">Hasta €400</option>
+                        <option value="600">Hasta €600</option>
+                    </select>
+                </div>
+                <div class="cerca-group">
+                    <label class="cerca-label">↕️ Ordenar</label>
+                    <select id="ordenProducto" class="cerca-select" onchange="renderProductos()">
+                        <option value="defecto">Por defecto</option>
+                        <option value="nombre">Nombre A–Z</option>
+                        <option value="precio_asc">Precio: menor a mayor</option>
+                        <option value="precio_desc">Precio: mayor a menor</option>
+                    </select>
+                </div>
+                <button class="cerca-reset" onclick="resetFiltrosProductos()">✕ Limpiar</button>
+            </div>
+
+            <p class="resultados-info" id="infoProductos"></p>
+            <div id="gridProductos" class="shop-grid"></div>
+            <div class="paginacion" id="paginacionProductos"></div>
+
+            <div class="shop-notice">
+                <p>🔒 <a href="login.php">Inicia sesión</a> o <a href="register.php">regístrate</a> para poder comprar.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <p class="footer-logo">⛳ Golf Club</p>
+            <p class="footer-copy">© 2025 Golf Club. Todos los derechos reservados.</p>
+            <p class="footer-user">
+                <a href="login.php">Iniciar sesión</a> · <a href="register.php">Registrarse</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        /* ── DATOS ── */
+        const jugadoresHombres = [
+            { rank: 1, nombre: "Scottie Scheffler", pais: "EE.UU.", bandera: "🇺🇸", golpes: 68.4, fairway: 72.1 },
+            { rank: 2, nombre: "Rory McIlroy", pais: "Irlanda del Norte", bandera: "🇬🇧", golpes: 69.1, fairway: 67.3 },
+            { rank: 3, nombre: "Jon Rahm", pais: "España", bandera: "🇪🇸", golpes: 69.5, fairway: 65.8 },
+            { rank: 4, nombre: "Viktor Hovland", pais: "Noruega", bandera: "🇳🇴", golpes: 69.7, fairway: 64.2 },
+            { rank: 5, nombre: "Xander Schauffele", pais: "EE.UU.", bandera: "🇺🇸", golpes: 69.9, fairway: 63.5 },
+            { rank: 6, nombre: "Patrick Cantlay", pais: "EE.UU.", bandera: "🇺🇸", golpes: 70.1, fairway: 62.9 },
+            { rank: 7, nombre: "Ludvig Åberg", pais: "Suecia", bandera: "🇸🇪", golpes: 70.2, fairway: 62.1 },
+            { rank: 8, nombre: "Collin Morikawa", pais: "EE.UU.", bandera: "🇺🇸", golpes: 70.4, fairway: 61.8 },
+            { rank: 9, nombre: "Tommy Fleetwood", pais: "Inglaterra", bandera: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", golpes: 70.5, fairway: 61.2 },
+            { rank: 10, nombre: "Hideki Matsuyama", pais: "Japón", bandera: "🇯🇵", golpes: 70.6, fairway: 60.5 },
+        ];
+        const jugadoresMujeres = [
+            { rank: 1, nombre: "Nelly Korda", pais: "EE.UU.", bandera: "🇺🇸", golpes: 69.2, fairway: 73.5 },
+            { rank: 2, nombre: "Celine Boutier", pais: "Francia", bandera: "🇫🇷", golpes: 69.8, fairway: 70.1 },
+            { rank: 3, nombre: "Lydia Ko", pais: "Nueva Zelanda", bandera: "🇳🇿", golpes: 70.0, fairway: 68.7 },
+            { rank: 4, nombre: "Lilia Vu", pais: "EE.UU.", bandera: "🇺🇸", golpes: 70.3, fairway: 67.2 },
+            { rank: 5, nombre: "Brooke Henderson", pais: "Canadá", bandera: "🇨🇦", golpes: 70.5, fairway: 65.9 },
+            { rank: 6, nombre: "Atthaya Thitikul", pais: "Tailandia", bandera: "🇹🇭", golpes: 70.7, fairway: 64.4 },
+            { rank: 7, nombre: "Hannah Green", pais: "Australia", bandera: "🇦🇺", golpes: 70.9, fairway: 63.8 },
+            { rank: 8, nombre: "Minjee Lee", pais: "Australia", bandera: "🇦🇺", golpes: 71.1, fairway: 63.0 },
+            { rank: 9, nombre: "Jeeno Thitaree", pais: "Tailandia", bandera: "🇹🇭", golpes: 71.3, fairway: 62.2 },
+            { rank: 10, nombre: "Rose Zhang", pais: "EE.UU.", bandera: "🇺🇸", golpes: 71.5, fairway: 61.5 },
+        ];
+        const torneos = [
+            { nombre: "The Masters", lugar: "Augusta, Georgia – EE.UU.", fecha: "2025-04-10", fechaTexto: "10–13 Abr 2025", tipo: "Major", estado: "finalizado", premio: 18000000 },
+            { nombre: "Augusta National Women's Amateur", lugar: "Augusta – EE.UU.", fecha: "2025-04-02", fechaTexto: "2–5 Abr 2025", tipo: "Femenino", estado: "finalizado", premio: 0 },
+            { nombre: "PGA Championship", lugar: "Quail Hollow – Carolina del Norte", fecha: "2025-05-15", fechaTexto: "15–18 May 2025", tipo: "Major", estado: "proximo", premio: 19000000 },
+            { nombre: "US Open", lugar: "Oakmont CC – Pennsylvania", fecha: "2025-06-12", fechaTexto: "12–15 Jun 2025", tipo: "Major", estado: "proximo", premio: 21500000 },
+            { nombre: "The Open Championship", lugar: "Royal Portrush – Irlanda", fecha: "2025-07-17", fechaTexto: "17–20 Jul 2025", tipo: "Major", estado: "proximo", premio: 17000000 },
+            { nombre: "AIG Women's Open", lugar: "Carnoustie – Escocia", fecha: "2025-08-07", fechaTexto: "7–10 Ago 2025", tipo: "Major Femenino", estado: "proximo", premio: 9000000 },
+            { nombre: "Ryder Cup", lugar: "Adare Manor – Irlanda", fecha: "2025-09-26", fechaTexto: "26–28 Sep 2025", tipo: "Equipo", estado: "proximo", premio: 0 },
+            { nombre: "DP World Tour Championship", lugar: "Dubai – EAU", fecha: "2025-12-18", fechaTexto: "18–21 Dic 2025", tipo: "Tour", estado: "proximo", premio: 10000000 },
+        ];
+        const productos = [
+            { nombre: "Driver TaylorMade Qi10", desc: "El driver más vendido de la temporada.", precio: 549, cat: "Palos", icono: "🏌️" },
+            { nombre: "Set de Hierros Callaway", desc: "Precisión y control en cada golpe.", precio: 899, cat: "Palos", icono: "🥊" },
+            { nombre: "Putter Scotty Cameron", desc: "El putter preferido de los campeones.", precio: 449, cat: "Palos", icono: "🎯" },
+            { nombre: "Wedge Titleist Vokey", desc: "Control absoluto en el juego corto.", precio: 189, cat: "Palos", icono: "🏑" },
+            { nombre: "Pelotas Pro V1x (docena)", desc: "Las favoritas de los pros en el tour.", precio: 59, cat: "Pelotas", icono: "⛳" },
+            { nombre: "Polo Nike Dri-FIT", desc: "Comodidad y estilo en el campo.", precio: 79, cat: "Ropa", icono: "🎽" },
+            { nombre: "Pantalón Under Armour", desc: "Flexibilidad y transpirabilidad total.", precio: 95, cat: "Ropa", icono: "👖" },
+            { nombre: "Gorra Callaway Tour", desc: "Protección solar con estilo.", precio: 35, cat: "Ropa", icono: "🧢" },
+            { nombre: "Zapatos FootJoy Pro SL", desc: "Agarre y comodidad durante 18 hoyos.", precio: 189, cat: "Calzado", icono: "👟" },
+            { nombre: "Bolsa de Golf Titleist", desc: "Ligera y con múltiples compartimentos.", precio: 329, cat: "Accesorios", icono: "🎒" },
+            { nombre: "Rangefinder Bushnell", desc: "Mide distancias con precisión láser.", precio: 249, cat: "Accesorios", icono: "🔭" },
+            { nombre: "Guantes FootJoy WeatherSof", desc: "Agarre perfecto con cualquier clima.", precio: 28, cat: "Accesorios", icono: "🧤" },
+        ];
+
+        /* ── ESTADO ── */
+        let tabActual = 'hombres';
+        let paginaJ = 1, paginaT = 1, paginaP = 1;
+        const PJ = 6, PT = 4, PP = 8;
+
+        /* ── UTILIDADES ── */
+        function formatPremio(n) { return n ? '$' + n.toLocaleString('es-ES') : '—'; }
+
+        function renderPaginacion(id, total, porPag, actual, fn) {
+            const totalPags = Math.ceil(total / porPag);
+            const el = document.getElementById(id);
+            if (totalPags <= 1) { el.innerHTML = ''; return; }
+            let h = `<button class="pag-btn${actual === 1 ? ' disabled' : ''}" onclick="${fn}(${actual - 1})">«</button>`;
+            for (let i = 1; i <= totalPags; i++)
+                h += `<button class="pag-btn${i === actual ? ' active' : ''}" onclick="${fn}(${i})">${i}</button>`;
+            h += `<button class="pag-btn${actual === totalPags ? ' disabled' : ''}" onclick="${fn}(${actual + 1})">»</button>`;
+            el.innerHTML = h;
+        }
+
+        /* ── JUGADORES ── */
+        function poblarPaises() {
+            const sel = document.getElementById('filtroPais');
+            const val = sel.value;
+            const datos = tabActual === 'hombres' ? jugadoresHombres : jugadoresMujeres;
+            const paises = [...new Set(datos.map(j => j.pais))].sort();
+            sel.innerHTML = '<option value="">Todos los países</option>' +
+                paises.map(p => `<option value="${p}"${p === val ? ' selected' : ''}>${p}</option>`).join('');
+        }
+
+        function cambiarTab(tab, btn) {
+            tabActual = tab; paginaJ = 1;
+            document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('filtroPais').value = '';
+            poblarPaises();
+            renderJugadores();
+        }
+
+        function renderJugadores(pag) {
+            if (pag !== undefined) paginaJ = pag;
+            const buscar = document.getElementById('buscadorJugador').value.toLowerCase();
+            const pais = document.getElementById('filtroPais').value;
+            const orden = document.getElementById('ordenJugador').value;
+            const fem = tabActual === 'mujeres';
+
+            let lista = fem ? [...jugadoresMujeres] : [...jugadoresHombres];
+            if (buscar) lista = lista.filter(j => j.nombre.toLowerCase().includes(buscar) || j.pais.toLowerCase().includes(buscar));
+            if (pais) lista = lista.filter(j => j.pais === pais);
+            lista.sort((a, b) => orden === 'rank' ? a.rank - b.rank : orden === 'nombre' ? a.nombre.localeCompare(b.nombre) : orden === 'golpes_asc' ? a.golpes - b.golpes : orden === 'golpes_desc' ? b.golpes - a.golpes : b.fairway - a.fairway);
+
+            document.getElementById('infoJugadores').textContent = lista.length === 0
+                ? 'Sin resultados.' : `${lista.length} jugador${lista.length !== 1 ? 'es' : ''} encontrado${lista.length !== 1 ? 's' : ''}`;
+
+            const pag2 = lista.slice((paginaJ - 1) * PJ, paginaJ * PJ);
+            document.getElementById('gridJugadores').innerHTML = pag2.length === 0
+                ? '<p class="sin-resultados">Sin resultados. Prueba con otros filtros.</p>'
+                : pag2.map(j => `
+            <div class="player-card${fem ? ' female' : ''}">
+                <div class="player-rank">#${j.rank}</div>
+                <div class="player-avatar">${j.nombre[0]}</div>
+                <h3 class="player-name">${j.nombre}</h3>
+                <p class="player-country">${j.bandera} ${j.pais}</p>
+                <div class="player-stats">
+                    <div class="stat"><span class="stat-val">${j.golpes}</span><span class="stat-lbl">Avg. golpes</span></div>
+                    <div class="stat"><span class="stat-val">${j.fairway}%</span><span class="stat-lbl">Fairways</span></div>
+                </div>
+            </div>`).join('');
+            renderPaginacion('paginacionJugadores', lista.length, PJ, paginaJ, 'renderJugadores');
+        }
+
+        function resetFiltrosJugadores() {
+            ['buscadorJugador'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('filtroPais').value = '';
+            document.getElementById('ordenJugador').value = 'rank';
+            paginaJ = 1; renderJugadores();
+        }
+
+        /* ── TORNEOS ── */
+        function renderTorneos(pag) {
+            if (pag !== undefined) paginaT = pag;
+            const buscar = document.getElementById('buscadorTorneo').value.toLowerCase();
+            const estado = document.getElementById('filtroEstado').value;
+            const tipo = document.getElementById('filtroTipo').value;
+            const orden = document.getElementById('ordenTorneo').value;
+
+            let lista = [...torneos];
+            if (buscar) lista = lista.filter(t => t.nombre.toLowerCase().includes(buscar) || t.lugar.toLowerCase().includes(buscar));
+            if (estado) lista = lista.filter(t => t.estado === estado);
+            if (tipo) lista = lista.filter(t => t.tipo === tipo);
+            lista.sort((a, b) => orden === 'fecha' ? new Date(a.fecha) - new Date(b.fecha) : orden === 'nombre' ? a.nombre.localeCompare(b.nombre) : orden === 'premio_desc' ? b.premio - a.premio : a.premio - b.premio);
+
+            document.getElementById('infoTorneos').textContent = lista.length === 0
+                ? 'Sin resultados.' : `${lista.length} torneo${lista.length !== 1 ? 's' : ''} encontrado${lista.length !== 1 ? 's' : ''}`;
+
+            const pag2 = lista.slice((paginaT - 1) * PT, paginaT * PT);
+            document.getElementById('listaTorneos').innerHTML = pag2.length === 0
+                ? '<p class="sin-resultados light">Sin resultados.</p>'
+                : pag2.map(t => `
+            <div class="torneo-card">
+                <div class="torneo-left">
+                    <span class="torneo-badge ${t.estado === 'finalizado' ? 'badge-done' : 'badge-next'}">${t.estado === 'finalizado' ? '✅ Finalizado' : '🔜 Próximo'}</span>
+                    <h3 class="torneo-name">${t.nombre}</h3>
+                    <p class="torneo-lugar">📍 ${t.lugar}</p>
+                </div>
+                <div class="torneo-mid">
+                    <span class="torneo-fecha">📅 ${t.fechaTexto}</span>
+                    <span class="torneo-tipo">${t.tipo}</span>
+                </div>
+                <div class="torneo-right">
+                    <span class="torneo-prize">💰 ${formatPremio(t.premio)}</span>
+                </div>
+            </div>`).join('');
+            renderPaginacion('paginacionTorneos', lista.length, PT, paginaT, 'renderTorneos');
+        }
+
+        function resetFiltrosTorneos() {
+            ['buscadorTorneo', 'filtroEstado', 'filtroTipo'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('ordenTorneo').value = 'fecha';
+            paginaT = 1; renderTorneos();
+        }
+
+        /* ── PRODUCTOS ── */
+        function renderProductos(pag) {
+            if (pag !== undefined) paginaP = pag;
+            const buscar = document.getElementById('buscadorProducto').value.toLowerCase();
+            const cat = document.getElementById('filtroCategoria').value;
+            const precMax = document.getElementById('filtroPreco').value;
+            const orden = document.getElementById('ordenProducto').value;
+
+            let lista = [...productos];
+            if (buscar) lista = lista.filter(p => p.nombre.toLowerCase().includes(buscar));
+            if (cat) lista = lista.filter(p => p.cat === cat);
+            if (precMax) lista = lista.filter(p => p.precio <= parseInt(precMax));
+            lista.sort((a, b) => orden === 'nombre' ? a.nombre.localeCompare(b.nombre) : orden === 'precio_asc' ? a.precio - b.precio : orden === 'precio_desc' ? b.precio - a.precio : 0);
+
+            document.getElementById('infoProductos').textContent = lista.length === 0
+                ? 'Sin resultados.' : `${lista.length} producto${lista.length !== 1 ? 's' : ''} encontrado${lista.length !== 1 ? 's' : ''}`;
+
+            const pag2 = lista.slice((paginaP - 1) * PP, paginaP * PP);
+            document.getElementById('gridProductos').innerHTML = pag2.length === 0
+                ? '<p class="sin-resultados">Sin resultados. Prueba con otros filtros.</p>'
+                : pag2.map(p => `
+            <div class="product-card">
+                <div class="product-icon">${p.icono}</div>
+                <span class="product-cat">${p.cat}</span>
+                <h3 class="product-name">${p.nombre}</h3>
+                <p class="product-desc">${p.desc}</p>
+                <div class="product-footer">
+                    <span class="product-price">€${p.precio}</span>
+                    <a href="login.php" class="btn-buy-login">Comprar</a>
+                </div>
+            </div>`).join('');
+            renderPaginacion('paginacionProductos', lista.length, PP, paginaP, 'renderProductos');
+        }
+
+        function resetFiltrosProductos() {
+            ['buscadorProducto', 'filtroCategoria', 'filtroPreco'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('ordenProducto').value = 'defecto';
+            paginaP = 1; renderProductos();
+        }
+
+        /* ── NAV ── */
+        function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+        window.addEventListener('scroll', () => {
+            document.getElementById('mobileMenu').classList.remove('open');
+            document.querySelector('.navbar').style.boxShadow = window.scrollY > 10 ? '0 4px 20px rgba(0,0,0,0.5)' : '0 2px 12px rgba(0,0,0,0.3)';
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+            e.preventDefault();
+            const t = document.querySelector(a.getAttribute('href'));
+            if (t) t.scrollIntoView({ behavior: 'smooth' });
+        }));
+
+        /* ── INIT ── */
+        poblarPaises();
+        renderJugadores();
+        renderTorneos();
+        renderProductos();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+# ⛳ Golf Club – Instrucciones de instalación con XAMPP
+
+## Archivos del proyecto
+- index.php      → Página principal (jugadores, torneos, tienda)
+- login.php      → Inicio de sesión
+- register.php   → Registro de usuario
+- logout.php     → Cerrar sesión
+- db.php         → Conexión a la base de datos (se crea sola)
+- style.css      → Estilos de la web
+
+---
+
+## Pasos para instalar
+
+### 1. Instala XAMPP
+Descárgalo desde: https://www.apachefriends.org/es/index.html
+Instálalo y abre el Panel de Control de XAMPP.
+
+### 2. Inicia Apache y MySQL
+En el panel de XAMPP, pulsa "Start" en:
+- Apache
+- MySQL
+
+### 3. Copia los archivos
+Copia toda la carpeta `golf` dentro de:
+  C:\xampp\htdocs\golf\        (Windows)
+  /Applications/XAMPP/htdocs/golf/   (Mac)
+
+### 4. Abre la web en el navegador
+Ve a: http://localhost/golf/
+
+La base de datos y la tabla de usuarios se crean automáticamente
+la primera vez que abres la web.
+
+---
+
+## Credenciales por defecto de MySQL
+- Host: localhost
+- Usuario: root
+- Contraseña: (vacía)
+- Base de datos: golf_web  ← se crea automáticamente
+
+Si tu MySQL tiene contraseña, edita db.php y cambia:
+  $password = "";  →  $password = "tu_contraseña";
+
+---
+
+## ¿Qué incluye la web?
+
+✅ Página principal con 3 apartados:
+   - Jugadores: hombres y mujeres con tabs
+   - Torneos 2025 con estado y premios
+   - Tienda con 8 productos
+
+✅ Registro de usuarios (con hash de contraseña seguro)
+✅ Inicio de sesión con sesión PHP
+✅ Cerrar sesión
+✅ La tienda bloquea compras si no estás logueado
+✅ Diseño responsive para móvil y escritorio
