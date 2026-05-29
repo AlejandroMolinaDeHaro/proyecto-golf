@@ -7,6 +7,9 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
+$loggedIn = isset($_SESSION['usuario_id']);
+$userName = $loggedIn ? $_SESSION['usuario_nombre'] : '';
+
 $message = '';
 $error = '';
 

@@ -8,6 +8,8 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 $usuario_id = $_SESSION['usuario_id'];
+$loggedIn = true;
+$userName = $_SESSION['usuario_nombre'];
 $message = '';
 
 // Agregar producto al carrito
@@ -60,37 +62,43 @@ while ($row = mysqli_fetch_assoc($result)) {
     <link rel="stylesheet" href="style.css">
     <style>
         .cart-container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .cart-item { display: flex; align-items: center; background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .cart-item { display: flex; align-items: center; background: var(--white); padding: 22px; border-radius: var(--radius); margin-bottom: 15px; box-shadow: var(--shadow); border-left: 4px solid var(--green-light); }
         .cart-item-info { flex: 1; }
-        .cart-item-name { font-weight: bold; font-size: 18px; }
-        .cart-item-price { color: #27ae60; font-size: 16px; margin-top: 5px; }
+        .cart-item-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 18px; color: var(--text-dark); }
+        .cart-item-price { color: var(--green-mid); font-size: 16px; margin-top: 5px; font-weight: 700; }
         .cart-item-qty { display: flex; align-items: center; gap: 10px; margin: 0 20px; }
-        .cart-item-qty input { width: 60px; padding: 5px; text-align: center; border: 1px solid #ddd; border-radius: 4px; }
-        .cart-item-subtotal { font-weight: bold; min-width: 100px; text-align: right; }
-        .cart-total { background: white; padding: 25px; border-radius: 8px; margin-top: 20px; text-align: right; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .cart-total h3 { font-size: 24px; color: #2c3e50; }
-        .btn-remove { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
-        .btn-remove:hover { background: #c0392b; }
-        .btn-update { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-left: 10px; }
-        .empty-cart { text-align: center; padding: 60px; background: white; border-radius: 8px; }
+        .cart-item-qty input { width: 60px; padding: 7px; text-align: center; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; font-family: 'Lato', sans-serif; background: var(--cream); }
+        .cart-item-qty input:focus { outline: none; border-color: var(--green-mid); background: white; }
+        .cart-item-subtotal { font-weight: 700; min-width: 100px; text-align: right; font-size: 18px; color: var(--green-dark); }
+        .cart-total { background: var(--white); padding: 28px; border-radius: var(--radius); margin-top: 20px; text-align: right; box-shadow: var(--shadow); border-top: 3px solid var(--gold); }
+        .cart-total h3 { font-size: 26px; color: var(--green-dark); font-family: 'Playfair Display', serif; }
+        .btn-remove { background: #c0392b; color: white; border: none; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 13px; font-family: 'Lato', sans-serif; transition: all 0.2s; }
+        .btn-remove:hover { background: #a93226; transform: translateY(-1px); }
+        .btn-update { background: var(--green-mid); color: white; border: none; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 13px; font-family: 'Lato', sans-serif; transition: all 0.2s; }
+        .btn-update:hover { background: var(--green-dark); transform: translateY(-1px); }
+        .empty-cart { text-align: center; padding: 60px; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); }
+        .empty-cart h2 { font-family: 'Playfair Display', serif; color: var(--text-dark); }
+        .btn-continue { display: inline-block; margin-top: 15px; padding: 12px 30px; background: var(--gold); color: var(--green-dark); font-weight: 700; border-radius: 25px; text-decoration: none; font-family: 'Lato', sans-serif; transition: all 0.2s; }
+        .btn-continue:hover { background: var(--gold-light); transform: translateY(-2px); }
+        .cart-container h1 { font-family: 'Playfair Display', serif; margin-bottom: 30px; color: var(--green-dark); }
+        .cart-container a { color: var(--green-mid); font-weight: 700; text-decoration: none; }
+        .cart-container a:hover { color: var(--green-dark); }
     </style>
 </head>
 <body>
     <?php include 'navbar.php'; ?>
 
     <div class="cart-container">
-        <h1 style="margin-bottom: 30px;">🛒 Tu Carrito</h1>
+        <h1>🛒 Tu Carrito</h1>
 
         <?php if ($message): ?>
-            <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <?= htmlspecialchars($message) ?>
-            </div>
+            <div class="alert alert-success"><?= htmlspecialchars($message) ?></div>
         <?php endif; ?>
 
         <?php if (empty($carrito_items)): ?>
             <div class="empty-cart">
                 <h2>Tu carrito está vacío</h2>
-                <p style="margin-top: 15px; color: #666;">Añade productos desde nuestra <a href="index.php#tienda">tienda</a></p>
+                <p style="margin-top: 15px; color: var(--gray-mid);">Añade productos desde nuestra <a href="index.php#tienda">tienda</a></p>
             </div>
         <?php else: ?>
             <?php foreach ($carrito_items as $item): ?>
@@ -112,7 +120,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
             <div class="cart-total">
                 <h3>Total: €<?= number_format($total, 2) ?></h3>
-                <a href="index.php#tienda" style="display: inline-block; margin-top: 15px; padding: 12px 30px; background: #27ae60; color: white; text-decoration: none; border-radius: 4px;">Seguir Comprando</a>
+                <a href="index.php#tienda" class="btn-continue">Seguir Comprando</a>
             </div>
         <?php endif; ?>
     </div>

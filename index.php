@@ -304,9 +304,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
             <?php
             $productos = [
                 ["🏌️","Driver TaylorMade Qi10","El driver más vendido de la temporada.","€549","Palos"],
-                ["🥊","Set de Hierros Callaway","Precisión y control en cada golpe.","€899","Palos"],
+                ["🏌️‍♂️","Set de Hierros Callaway","Precisión y control en cada golpe.","€899","Palos"],
                 ["⛳","Pelotas Pro V1x (docena)","Las favoritas de los pros en el tour.","€59","Pelotas"],
-                ["🎽","Polo Nike Dri-FIT","Comodidad y estilo en el campo.","€79","Ropa"],
+                ["👚","Polo Nike Dri-FIT","Comodidad y estilo en el campo.","€79","Ropa"],
                 ["👟","Zapatos FootJoy Pro SL","Agarre y comodidad durante 18 hoyos.","€189","Calzado"],
                 ["🎒","Bolsa de Golf Titleist","Ligera y con múltiples compartimentos.","€329","Accesorios"],
                 ["🧢","Gorra Callaway Tour","Protección solar con estilo.","€35","Ropa"],

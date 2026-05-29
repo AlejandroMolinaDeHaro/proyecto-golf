@@ -85,7 +85,7 @@ elseif (strpos($file, 'db_') !== false) {
     
     $sql = file_get_contents($sql_file);
     if ($sql) {
-        $conn = new mysqli('localhost', 'root', '');
+        $conn = new mysqli('127.0.0.1', 'root', '', '', 3307);
         if ($conn->connect_error) {
             $errors[] = 'Error BD: ' . $conn->connect_error;
         } else {

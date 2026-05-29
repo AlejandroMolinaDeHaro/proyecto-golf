@@ -1,11 +1,12 @@
 <?php
 // Datos de conexión
-$host = "localhost";
-$user = "root";       // Usuario estándar de XAMPP
-$pass = "";           // Contraseña vacía por defecto
-$db   = "progolf";    // Tu base de datos
+$host = "127.0.0.1";
+$port = 3307;
+$user = "root";
+$pass = "";
+$db   = "progolf";
 
-$conexion = mysqli_connect($host, $user, $pass, $db);
+$conexion = mysqli_connect($host, $user, $pass, $db, $port);
 
 // Verificar si funciona
 if (!$conexion) {

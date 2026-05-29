@@ -44,7 +44,7 @@ if ($zip->open($zip_file, ZipArchive::CREATE) === TRUE) {
 
 // Backup base de datos
 $sql_file = $backup_dir . '/progolf_db_' . $date . '.sql';
-$conn = new mysqli('localhost', 'root', '', 'progolf');
+$conn = new mysqli('127.0.0.1', 'root', '', 'progolf', 3307);
 
 if ($conn->connect_error) {
     $errors[] = 'Error BD: ' . $conn->connect_error;

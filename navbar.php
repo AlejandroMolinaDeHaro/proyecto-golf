@@ -1,16 +1,17 @@
-<nav class="navbar">
-    <a href="index.php" class="logo">Golf Club</a>
-    <div class="nav-links">
+<header class="navbar">
+    <div class="nav-brand">⛳ Golf Club</div>
+    <nav class="nav-links">
         <a href="index.php#jugadores">Jugadores</a>
-        <a href="index.php#tienda">Tienda</a>
         <a href="index.php#torneos">Torneos</a>
-        <a href="encuesta.php">Encuesta</a>
+        <a href="index.php#tienda">Tienda</a>
+        <a href="index.php#favoritos">Favoritos</a>
         <a href="carrito.php">Carrito 🛒</a>
         <?php if ($loggedIn): ?>
-            <a href="logout.php" class="nav-user">Salir (<?php echo htmlspecialchars($userName); ?>)</a>
+            <span class="nav-user">👤 <?= htmlspecialchars($userName) ?></span>
+            <a href="logout.php" class="btn-nav-logout">Cerrar sesión</a>
         <?php else: ?>
-            <a href="login.php">Login</a>
-            <a href="register.php" class="nav-register">Registro</a>
+            <a href="login.php" class="btn-nav-login">Iniciar sesión</a>
+            <a href="register.php" class="btn-nav-register">Registrarse</a>
         <?php endif; ?>
-    </div>
-</nav>
+    </nav>
+</header>

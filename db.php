@@ -1,10 +1,11 @@
 <?php
-$host = "localhost";
+$host = "127.0.0.1";
+$port = 3307;
 $user = "root";
 $password = "";
 $database = "progolf";
 
-$conn = mysqli_connect($host, $user, $password);
+$conn = mysqli_connect($host, $user, $password, "", $port);
 
 if (!$conn) {
     die("Error de conexión: " . mysqli_connect_error());
