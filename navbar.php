@@ -8,6 +8,9 @@
         <a href="carrito.php">Carrito 🛒</a>
         <?php if ($loggedIn): ?>
             <span class="nav-user">👤 <?= htmlspecialchars($userName) ?></span>
+            <?php if (isset($userRole) && $userRole === 'admin'): ?>
+                <a href="admin/index.php" class="btn-nav-admin" style="color:#c9a84c;font-weight:700;">⚙ Admin</a>
+            <?php endif; ?>
             <a href="logout.php" class="btn-nav-logout">Cerrar sesión</a>
         <?php else: ?>
             <a href="login.php" class="btn-nav-login">Iniciar sesión</a>

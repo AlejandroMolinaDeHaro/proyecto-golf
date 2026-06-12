@@ -6,9 +6,12 @@ if (isset($_POST['crear_usuario'])) {
     $nombre = trim($_POST['nombre']);
     $email = trim($_POST['email']);
     $password = $_POST['password'];
+    $rol = $_POST['rol'] ?? 'user';
 
     if (empty($nombre) || empty($email) || empty($password)) {
         $error = "Todos los campos son obligatorios.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "El email no tiene un formato válido.";
     } elseif (strlen($password) < 6) {
         $error = "La contraseña debe tener al menos 6 caracteres.";
     } else {
@@ -17,13 +20,24 @@ if (isset($_POST['crear_usuario'])) {
             $error = "Este email ya está registrado.";
         } else {
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO usuarios (nombre, email, password) VALUES ('" . mysqli_real_escape_string($conn, $nombre) . "','" . mysqli_real_escape_string($conn, $email) . "','$hash')";
+            $rol_esc = mysqli_real_escape_string($conn, $rol);
+            $sql = "INSERT INTO usuarios (nombre, email, password, rol) VALUES ('" . mysqli_real_escape_string($conn, $nombre) . "','" . mysqli_real_escape_string($conn, $email) . "','$hash','$rol_esc')";
             if (mysqli_query($conn, $sql)) {
                 $success = "Usuario creado exitosamente.";
             } else {
                 $error = "Error al crear el usuario.";
             }
         }
+    }
+}
+
+// Cambiar rol de usuario
+if (isset($_GET['cambiar_rol'])) {
+    $id = (int)$_GET['cambiar_rol'];
+    $nuevo_rol = $_GET['nuevo_rol'] === 'admin' ? 'admin' : 'user';
+    if ($id > 0) {
+        mysqli_query($conn, "UPDATE usuarios SET rol='$nuevo_rol' WHERE id=$id");
+        $success = "Rol de usuario actualizado a: $nuevo_rol";
     }
 }
 
@@ -71,18 +85,37 @@ $usuarios = mysqli_query($conn, "SELECT * FROM usuarios ORDER BY fecha_registro 
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Email</th>
+                    <th>Rol</th>
                     <th>Fecha Registro</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while ($u = mysqli_fetch_assoc($usuarios)): ?>
+                <?php while ($u = mysqli_fetch_assoc($usuarios)): 
+                    $rol_usuario = $u['rol'] ?? 'user';
+                ?>
                 <tr>
                     <td><?php echo $u['id']; ?></td>
                     <td><strong><?php echo htmlspecialchars($u['nombre']); ?></strong></td>
                     <td><?php echo htmlspecialchars($u['email']); ?></td>
+                    <td>
+                        <span class="badge <?php echo $rol_usuario === 'admin' ? 'badge-blue' : 'badge-green'; ?>">
+                            <?php echo $rol_usuario === 'admin' ? 'Admin' : 'Usuario'; ?>
+                        </span>
+                    </td>
                     <td><?php echo $u['fecha_registro']; ?></td>
                     <td>
+                        <?php if ($rol_usuario !== 'admin'): ?>
+                            <a href="?token=<?php echo htmlspecialchars($token); ?>&section=usuarios&cambiar_rol=<?php echo $u['id']; ?>&nuevo_rol=admin"
+                               class="btn btn-warning btn-small">
+                                Hacer Admin
+                            </a>
+                        <?php else: ?>
+                            <a href="?token=<?php echo htmlspecialchars($token); ?>&section=usuarios&cambiar_rol=<?php echo $u['id']; ?>&nuevo_rol=user"
+                               class="btn btn-small" style="background:#6c757d;color:white;">
+                                Quitar Admin
+                            </a>
+                        <?php endif; ?>
                         <a href="?token=<?php echo htmlspecialchars($token); ?>&section=usuarios&eliminar=<?php echo $u['id']; ?>"
                            class="btn btn-danger btn-small"
                            onclick="return confirm('¿Eliminar a <?php echo addslashes($u['nombre']); ?>?\n\nSe eliminarán también sus registros de carrito y encuestas.')">
@@ -110,6 +143,13 @@ $usuarios = mysqli_query($conn, "SELECT * FROM usuarios ORDER BY fecha_registro 
         <div class="form-group">
             <label>Contraseña</label>
             <input type="password" name="password" placeholder="Mínimo 6 caracteres" required>
+        </div>
+        <div class="form-group">
+            <label>Rol</label>
+            <select name="rol">
+                <option value="user">Usuario</option>
+                <option value="admin">Administrador</option>
+            </select>
         </div>
         <button type="submit" name="crear_usuario" class="btn btn-primary">Crear Usuario</button>
     </form>

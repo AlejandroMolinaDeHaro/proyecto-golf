@@ -1,9 +1,101 @@
 <?php
-$correct_token = 'admin123';
+session_start();
+require __DIR__ . '/../db.php';
 
+$correct_token = 'admin123';
+$error = '';
+
+// Logout
+if (isset($_GET['logout'])) {
+    unset($_SESSION['admin_auth']);
+    unset($_SESSION['usuario_id']);
+    unset($_SESSION['usuario_nombre']);
+    unset($_SESSION['usuario_rol']);
+    header('Location: index.php');
+    exit;
+}
+
+// Procesar login del admin
+if (isset($_POST['admin_login'])) {
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+
+    if (!empty($email) && !empty($password)) {
+        $sql = "SELECT * FROM usuarios WHERE email='" . mysqli_real_escape_string($conn, $email) . "'";
+        $result = mysqli_query($conn, $sql);
+        if ($row = mysqli_fetch_assoc($result)) {
+            if (password_verify($password, $row['password']) && ($row['rol'] ?? 'user') === 'admin') {
+                $_SESSION['admin_auth'] = true;
+                $_SESSION['usuario_id'] = $row['id'];
+                $_SESSION['usuario_nombre'] = $row['nombre'];
+                $_SESSION['usuario_rol'] = 'admin';
+            } else {
+                $error = 'Credenciales inválidas o no tienes permisos de administrador.';
+            }
+        } else {
+            $error = 'Credenciales inválidas o no tienes permisos de administrador.';
+        }
+    } else {
+        $error = 'Por favor, rellena todos los campos.';
+    }
+}
+
+// Verificar autenticación: token O sesión admin O admin_auth
 $token = $_GET['token'] ?? ($_POST['token'] ?? '');
-if ($token !== $correct_token) {
-    die('Acceso denegado. Usa: ?token=admin123');
+$is_admin_session = (isset($_SESSION['usuario_rol']) && $_SESSION['usuario_rol'] === 'admin')
+                 || !empty($_SESSION['admin_auth']);
+
+if (!$is_admin_session && $token !== $correct_token) {
+    // Mostrar formulario de login
+    ?>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Login - Progolf</title>
+        <link rel="stylesheet" href="../style.css">
+        <style>
+            .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+            .auth-container .auth-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 420px; text-align: center; }
+            .auth-container h1 { font-family: 'Playfair Display', serif; color: #1a3c2b; margin-bottom: 8px; }
+            .auth-container p { color: #666; margin-bottom: 24px; font-size: 14px; }
+            .auth-container input { width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; margin-bottom: 16px; font-family: 'Lato', sans-serif; box-sizing: border-box; }
+            .auth-container input:focus { outline: none; border-color: #2e6b49; }
+            .auth-container button { width: 100%; padding: 14px; background: #1a3c2b; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Lato', sans-serif; transition: background 0.2s; }
+            .auth-container button:hover { background: #2e6b49; }
+            .auth-container .error { background: #fdecea; color: #c0392b; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+            .auth-container .admin-icon { font-size: 48px; margin-bottom: 16px; }
+            .auth-container .back-link { display: block; margin-top: 16px; color: #2e6b49; text-decoration: none; font-size: 14px; }
+            .auth-container .back-link:hover { text-decoration: underline; }
+        </style>
+    </head>
+    <body class="auth-page">
+        <div class="auth-container">
+            <div class="auth-box">
+                <div class="admin-icon">⚙</div>
+                <h1>Admin Progolf</h1>
+                <p>Ingresa con tu cuenta de administrador</p>
+                <?php if ($error): ?>
+                    <div class="error"><?= htmlspecialchars($error) ?></div>
+                <?php endif; ?>
+                <form method="POST">
+                    <input type="email" name="email" placeholder="Email" required autofocus>
+                    <input type="password" name="password" placeholder="Contraseña" required>
+                    <button type="submit" name="admin_login">Acceder al Panel</button>
+                </form>
+                <a href="../index.php" class="back-link">← Volver al inicio</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+
+// Si entró por sesión, usar el token para las llamadas JS internas
+if ($is_admin_session) {
+    $token = $correct_token;
 }
 
 $section = $_GET['section'] ?? 'dashboard';
@@ -197,6 +289,7 @@ $section = $_GET['section'] ?? 'dashboard';
     </nav>
     <div class="sidebar-footer">
         <a href="../index.php">← Volver al sitio</a>
+        <span style="display:block;margin-top:8px;"><a href="?logout=1" style="color:#e74c3c;">✕ Cerrar sesión</a></span>
     </div>
 </aside>
 

@@ -13,6 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($nombre) || empty($email) || empty($password)) {
         $error = "Por favor, rellena todos los campos.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "El email no tiene un formato válido.";
     } elseif ($password !== $confirm) {
         $error = "Las contraseñas no coinciden.";
     } elseif (strlen($password) < 6) {

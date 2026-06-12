@@ -15,6 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($email) || empty($password)) {
         $error = "Por favor, rellena todos los campos.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "El email no tiene un formato válido.";
     } else {
         $sql = "SELECT * FROM usuarios WHERE email='".mysqli_real_escape_string($conn,$email)."'";
         $result = mysqli_query($conn, $sql);
@@ -22,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (password_verify($password, $row['password'])) {
                 $_SESSION['usuario_id'] = $row['id'];
                 $_SESSION['usuario_nombre'] = $row['nombre'];
+                $_SESSION['usuario_rol'] = $row['rol'] ?? 'user';
                 header("Location: index.php");
                 exit;
             } else {

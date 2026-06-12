@@ -2,6 +2,7 @@
 session_start();
 $loggedIn = isset($_SESSION['usuario_id']);
 $userName = $loggedIn ? $_SESSION['usuario_nombre'] : '';
+$userRole = $loggedIn ? ($_SESSION['usuario_rol'] ?? 'user') : '';
 
 $fav_message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
@@ -47,6 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
         <a href="carrito.php">Carrito 🛒</a>
         <?php if ($loggedIn): ?>
             <span class="nav-user">👤 <?= htmlspecialchars($userName) ?></span>
+            <?php if ($userRole === 'admin'): ?>
+                <a href="admin/index.php" style="color:#c9a84c;font-weight:700;">⚙ Admin</a>
+            <?php endif; ?>
             <a href="logout.php" class="btn-nav-logout">Cerrar sesión</a>
         <?php else: ?>
             <a href="login.php" class="btn-nav-login">Iniciar sesión</a>
@@ -263,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
                     <p class="torneo-lugar">📍 <?= $t[1] ?></p>
                 </div>
                 <div class="torneo-mid">
-                    <span class="torneo-fecha">📅 <?= $t[2] ?></span>
+                    <span class="torneo-fecha"><?= $t[2] ?></span>
                     <span class="torneo-tipo"><?= $t[3] ?></span>
                 </div>
                 <div class="torneo-right">
@@ -303,18 +307,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
         <div class="shop-grid">
             <?php
             $productos = [
-                ["🏌️","Driver TaylorMade Qi10","El driver más vendido de la temporada.","€549","Palos"],
-                ["🏌️‍♂️","Set de Hierros Callaway","Precisión y control en cada golpe.","€899","Palos"],
-                ["⛳","Pelotas Pro V1x (docena)","Las favoritas de los pros en el tour.","€59","Pelotas"],
-                ["👚","Polo Nike Dri-FIT","Comodidad y estilo en el campo.","€79","Ropa"],
-                ["👟","Zapatos FootJoy Pro SL","Agarre y comodidad durante 18 hoyos.","€189","Calzado"],
-                ["🎒","Bolsa de Golf Titleist","Ligera y con múltiples compartimentos.","€329","Accesorios"],
-                ["🧢","Gorra Callaway Tour","Protección solar con estilo.","€35","Ropa"],
-                ["🔭","Rangefinder Bushnell","Mide distancias con precisión láser.","€249","Accesorios"],
+                ["🏌️","Driver TaylorMade Qi10","El driver más vendido de la temporada.","€549","Palos",""],
+                ["🏌️‍♂️","Set de Hierros Callaway","Precisión y control en cada golpe.","€899","Palos",""],
+                ["⛳","Pelotas Pro V1x (docena)","Las favoritas de los pros en el tour.","€59","Pelotas",""],
+                ["👚","Polo Nike Dri-FIT","Comodidad y estilo en el campo.","€79","Ropa",""],
+                ["👟","Zapatos FootJoy Pro SL","Agarre y comodidad durante 18 hoyos.","€189","Calzado",""],
+                ["🎒","Bolsa de Golf Titleist","Ligera y con múltiples compartimentos.","€329","Accesorios",""],
+                ["🧢","Gorra Callaway Tour","Protección solar con estilo.","€35","Ropa",""],
+                ["🔭","Rangefinder Bushnell","Mide distancias con precisión láser.","€249","Accesorios",""],
             ];
             foreach ($productos as $p): ?>
             <div class="product-card">
-                <div class="product-icon"><?= $p[0] ?></div>
+                <div class="product-icon"><?php if ($p[5]): ?><img src="<?= htmlspecialchars($p[5]) ?>" alt="<?= htmlspecialchars($p[1]) ?>" style="width:100%;height:100%;object-fit:contain;"><?php else: ?><?= $p[0] ?><?php endif; ?></div>
                 <span class="product-cat"><?= $p[4] ?></span>
                 <h3 class="product-name"><?= $p[1] ?></h3>
                 <p class="product-desc"><?= $p[2] ?></p>
@@ -337,7 +341,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
 
         <?php if (!$loggedIn): ?>
         <div class="shop-notice">
-            <p>🔒 <a href="login.php">Inicia sesión</a> o <a href="register.php">regístrate</a> para poder comprar productos.</p>
+            <p><a href="login.php">Inicia sesión</a> o <a href="register.php">regístrate</a> para poder comprar productos.</p>
         </div>
         <?php endif; ?>
 
@@ -354,7 +358,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
 <section id="favoritos" class="section" style="background:#f8f9fa;">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">🏆 Tus Favoritos</h2>
+            <h2 class="section-title">Tus Favoritos</h2>
             <p class="section-sub">Cuéntanos cuál es tu jugador y torneo preferido</p>
         </div>
 
@@ -364,11 +368,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
 
         <form method="POST" style="max-width:550px;margin:0 auto;background:white;padding:40px;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
             <div style="margin-bottom:24px;">
-                <label style="display:block;font-weight:bold;margin-bottom:8px;color:#2c3e50;">🏌️ ¿Cuál es tu jugador favorito?</label>
+                <label style="display:block;font-weight:bold;margin-bottom:8px;color:#2c3e50;">¿Cuál es tu jugador favorito?</label>
                 <input type="text" name="mejor_jugador" placeholder="Ej: Jon Rahm, Scottie Scheffler..." required style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:8px;font-size:16px;">
             </div>
             <div style="margin-bottom:24px;">
-                <label style="display:block;font-weight:bold;margin-bottom:8px;color:#2c3e50;">⛳ ¿Cuál es tu torneo favorito?</label>
+                <label style="display:block;font-weight:bold;margin-bottom:8px;color:#2c3e50;">¿Cuál es tu torneo favorito?</label>
                 <input type="text" name="campo_torneo" placeholder="Ej: The Masters, US Open..." required style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:8px;font-size:16px;">
             </div>
             <button type="submit" name="submit_favorito" style="width:100%;padding:16px;background:#2c3e50;color:white;border:none;border-radius:8px;font-size:18px;cursor:pointer;font-weight:bold;">Enviar Favoritos</button>
@@ -383,6 +387,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
         <p class="footer-copy">© 2025 Golf Club. Todos los derechos reservados.</p>
         <?php if ($loggedIn): ?>
             <p class="footer-user">Sesión iniciada como <strong><?= htmlspecialchars($userName) ?></strong> · <a href="logout.php">Cerrar sesión</a></p>
+        <?php else: ?>
+            <p class="footer-user"><a href="login.php">Inicia sesión</a> o <a href="register.php">regístrate</a> para poder comprar.</p>
         <?php endif; ?>
     </div>
 </footer>
