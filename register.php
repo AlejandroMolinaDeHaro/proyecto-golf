@@ -44,7 +44,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body class="auth-page">
     <div class="auth-container">
-        <div class="auth-logo">⛳</div>
         <h1 class="auth-title">Crear Cuenta</h1>
         <p class="auth-sub">Únete al club</p>
 

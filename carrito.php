@@ -90,7 +90,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <?php include 'navbar.php'; ?>
 
     <div class="cart-container">
-        <h1>🛒 Tu Carrito</h1>
+        <h1>Tu Carrito</h1>
 
         <?php if ($message): ?>
             <div class="alert alert-success"><?= htmlspecialchars($message) ?></div>

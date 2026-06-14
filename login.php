@@ -45,7 +45,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body class="auth-page">
     <div class="auth-container">
-        <div class="auth-logo">⛳</div>
         <h1 class="auth-title">Bienvenido</h1>
         <p class="auth-sub">Inicia sesión en tu cuenta</p>
 

@@ -333,6 +333,8 @@ body {
 
 .badge-done { background: rgba(46,125,50,0.3); color: #81c784; }
 .badge-next { background: rgba(201,168,76,0.2); color: var(--gold-light); }
+.badge-live { background: rgba(192,57,43,0.25); color: #ff6b6b; animation: pulse-live 1.5s ease-in-out infinite; }
+@keyframes pulse-live { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
 
 .torneo-name {
     font-family: 'Playfair Display', serif;

@@ -45,11 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
         <a href="#torneos">Torneos</a>
         <a href="#tienda">Tienda</a>
         <a href="#favoritos">Favoritos</a>
-        <a href="carrito.php">Carrito 🛒</a>
+        <a href="carrito.php">Carrito</a>
         <?php if ($loggedIn): ?>
             <span class="nav-user">👤 <?= htmlspecialchars($userName) ?></span>
             <?php if ($userRole === 'admin'): ?>
-                <a href="admin/index.php" style="color:#c9a84c;font-weight:700;">⚙ Admin</a>
+                <a href="admin/index.php" style="color:#c9a84c;font-weight:700;">Admin</a>
             <?php endif; ?>
             <a href="logout.php" class="btn-nav-logout">Cerrar sesión</a>
         <?php else: ?>
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
                     <p class="player-country"><?= $j[1] ?></p>
                     <div class="player-stats">
                         <div class="stat"><span class="stat-val"><?= $j[3] ?></span><span class="stat-lbl">Avg. golpes</span></div>
-                        <div class="stat"><span class="stat-val"><?= $j[4] ?></span><span class="stat-lbl">Fairways</span></div>
+                        <div class="stat"><span class="stat-val"><?= $j[4] ?></span><span class="stat-lbl">Victorias</span></div>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -206,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
                     <p class="player-country"><?= $j[1] ?></p>
                     <div class="player-stats">
                         <div class="stat"><span class="stat-val"><?= $j[3] ?></span><span class="stat-lbl">Avg. golpes</span></div>
-                        <div class="stat"><span class="stat-val"><?= $j[4] ?></span><span class="stat-lbl">Fairways</span></div>
+                        <div class="stat"><span class="stat-val"><?= $j[4] ?></span><span class="stat-lbl">Victorias</span></div>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -236,11 +236,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
             <select id="filtroEstado" style="padding:10px;margin-left:10px;border:1px solid #555;border-radius:4px;background:#333;color:white;" onchange="filtrarTorneos()">
                 <option value="">Todos</option>
                 <option value="✅ Finalizado">Finalizados</option>
-                <option value="✅ Finalizado">Próximos</option>
+                <option value="🔴 Jugando">En directo</option>
+                <option value="🔜 Próximo">Próximos</option>
             </select>
         </div>
         <div class="torneos-list">
             <?php
+            function estadoTorneo($fecha_str, $estado_default) {
+                if ($estado_default === '✅ Finalizado') return $estado_default;
+                $meses = ['Ene'=>'Jan','Feb'=>'Feb','Mar'=>'Mar','Abr'=>'Apr','May'=>'May','Jun'=>'Jun',
+                          'Jul'=>'Jul','Ago'=>'Aug','Sep'=>'Sep','Oct'=>'Oct','Nov'=>'Nov','Dic'=>'Dic'];
+                $fecha_ing = str_replace(array_keys($meses), array_values($meses), $fecha_str);
+                if (preg_match('/(\d+)\s*[\x{2013}\x{2014}-]\s*(\d+)\s+(\w+)\s+(\d{4})/u', $fecha_ing, $m)) {
+                    $inicio = strtotime("$m[1] $m[3] $m[4]");
+                    $fin = strtotime("$m[2] $m[3] $m[4]") + 86400;
+                    $hoy = time();
+                    if ($hoy >= $inicio && $hoy <= $fin) return '🔴 Jugando';
+                    if ($hoy > $fin) return '✅ Finalizado';
+                }
+                return $estado_default;
+            }
             $torneos = [
                 ["The Masters","Augusta, Georgia – EE.UU.","10–13 Abr 2026","Major","✅ Finalizado","$18.000.000"],
                 ["US Open","Oakmont CC – Pennsylvania","12–15 Jun 2026","Major","🔜 Próximo","$21.500.000"],
@@ -259,10 +274,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
                 ["Women's PGA Championship","Seattle – EE.UU.","19–22 Jun 2026","Major Fem.","🔜 Próximo","$8.500.000"],
                 ["Evian Championship","Évian-les-Bains – Francia","14–17 Ago 2026","Major Fem.","🔜 Próximo","$8.000.000"],
             ];
-            foreach ($torneos as $t): ?>
+            foreach ($torneos as $t):
+                $estado = estadoTorneo($t[2], $t[4]);
+            ?>
             <div class="torneo-card">
                 <div class="torneo-left">
-                    <span class="torneo-badge <?= $t[4]==='✅ Finalizado' ? 'badge-done' : 'badge-next' ?>"><?= $t[4] ?></span>
+                    <span class="torneo-badge <?= $estado==='✅ Finalizado' ? 'badge-done' : ($estado==='🔴 Jugando' ? 'badge-live' : 'badge-next') ?>"><?= $estado ?></span>
                     <h3 class="torneo-name"><?= $t[0] ?></h3>
                     <p class="torneo-lugar">📍 <?= $t[1] ?></p>
                 </div>
@@ -271,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
                     <span class="torneo-tipo"><?= $t[3] ?></span>
                 </div>
                 <div class="torneo-right">
-                    <span class="torneo-prize">💰 <?= $t[5] ?></span>
+                    <span class="torneo-prize"><?= $t[5] ?></span>
                 </div>
             </div>
             <?php endforeach; ?>
@@ -369,11 +386,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_favorito'])) {
         <form method="POST" style="max-width:550px;margin:0 auto;background:white;padding:40px;border-radius:12px;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
             <div style="margin-bottom:24px;">
                 <label style="display:block;font-weight:bold;margin-bottom:8px;color:#2c3e50;">¿Cuál es tu jugador favorito?</label>
-                <input type="text" name="mejor_jugador" placeholder="Ej: Jon Rahm, Scottie Scheffler..." required style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:8px;font-size:16px;">
+                <input type="text" name="mejor_jugador" required style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:8px;font-size:16px;">
             </div>
             <div style="margin-bottom:24px;">
                 <label style="display:block;font-weight:bold;margin-bottom:8px;color:#2c3e50;">¿Cuál es tu torneo favorito?</label>
-                <input type="text" name="campo_torneo" placeholder="Ej: The Masters, US Open..." required style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:8px;font-size:16px;">
+                <input type="text" name="campo_torneo" required style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:8px;font-size:16px;">
             </div>
             <button type="submit" name="submit_favorito" style="width:100%;padding:16px;background:#2c3e50;color:white;border:none;border-radius:8px;font-size:18px;cursor:pointer;font-weight:bold;">Enviar Favoritos</button>
         </form>
