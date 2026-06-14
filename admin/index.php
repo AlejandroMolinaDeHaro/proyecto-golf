@@ -1,6 +1,26 @@
 <?php
 session_start();
-require __DIR__ . '/../db.php';
+
+// Conexión a BD solo cuando se necesita (no para backups)
+$conn = null;
+function conectar_bd() {
+    global $conn;
+    if ($conn !== null) return $conn;
+    $host = "127.0.0.1"; $port = 3306; $user = "root"; $password = ""; $database = "progolf";
+    $conn = @mysqli_connect($host, $user, $password, "", $port);
+    if ($conn) {
+        @mysqli_query($conn, "CREATE DATABASE IF NOT EXISTS $database");
+        @mysqli_select_db($conn, $database);
+        @mysqli_query($conn, "CREATE TABLE IF NOT EXISTS usuarios (id INT AUTO_INCREMENT PRIMARY KEY, nombre VARCHAR(100) NOT NULL, email VARCHAR(150) NOT NULL UNIQUE, password VARCHAR(255) NOT NULL, rol VARCHAR(20) DEFAULT 'user', fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
+        $check = @mysqli_query($conn, "SHOW COLUMNS FROM usuarios LIKE 'rol'");
+        if ($check && mysqli_num_rows($check) == 0) {
+            @mysqli_query($conn, "ALTER TABLE usuarios ADD COLUMN rol VARCHAR(20) DEFAULT 'user'");
+        }
+        @mysqli_query($conn, "CREATE TABLE IF NOT EXISTS carrito (id INT AUTO_INCREMENT PRIMARY KEY, usuario_id INT NOT NULL, producto_nombre VARCHAR(255) NOT NULL, producto_precio DECIMAL(10,2) NOT NULL, cantidad INT DEFAULT 1, fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE)");
+        @mysqli_query($conn, "CREATE TABLE IF NOT EXISTS encuestas (id INT AUTO_INCREMENT PRIMARY KEY, usuario_id INT DEFAULT NULL, mejor_jugador VARCHAR(255) NOT NULL, campo_torneo VARCHAR(255) NOT NULL, fecha_respuesta TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
+    }
+    return $conn;
+}
 
 $correct_token = 'admin123';
 $error = '';
@@ -21,8 +41,9 @@ if (isset($_POST['admin_login'])) {
     $password = $_POST['password'];
 
     if (!empty($email) && !empty($password)) {
-        $sql = "SELECT * FROM usuarios WHERE email='" . mysqli_real_escape_string($conn, $email) . "'";
-        $result = mysqli_query($conn, $sql);
+        $db = conectar_bd();
+        $sql = "SELECT * FROM usuarios WHERE email='" . mysqli_real_escape_string($db, $email) . "'";
+        $result = mysqli_query($db, $sql);
         if ($row = mysqli_fetch_assoc($result)) {
             if (password_verify($password, $row['password']) && ($row['rol'] ?? 'user') === 'admin') {
                 $_SESSION['admin_auth'] = true;
@@ -56,7 +77,7 @@ if (!$is_admin_session && $token !== $correct_token) {
         <title>Admin Login - Progolf</title>
         <link rel="stylesheet" href="../style.css">
         <style>
-            .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+            .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: transparent; box-shadow: none; }
             .auth-container .auth-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 420px; text-align: center; }
             .auth-container h1 { font-family: 'Playfair Display', serif; color: #1a3c2b; margin-bottom: 8px; }
             .auth-container p { color: #666; margin-bottom: 24px; font-size: 14px; }
@@ -73,7 +94,6 @@ if (!$is_admin_session && $token !== $correct_token) {
     <body class="auth-page">
         <div class="auth-container">
             <div class="auth-box">
-                <div class="admin-icon">⚙</div>
                 <h1>Admin Progolf</h1>
                 <p>Ingresa con tu cuenta de administrador</p>
                 <?php if ($error): ?>
@@ -278,24 +298,28 @@ $section = $_GET['section'] ?? 'dashboard';
     </div>
     <nav class="sidebar-nav">
         <a href="?token=<?= htmlspecialchars($token) ?>&section=dashboard" class="<?= $section === 'dashboard' ? 'active' : '' ?>">
-            📊 <span>Dashboard</span>
+            <span>Dashboard</span>
         </a>
         <a href="?token=<?= htmlspecialchars($token) ?>&section=backups" class="<?= $section === 'backups' ? 'active' : '' ?>">
-            💾 <span>Backups</span>
+            <span>Backups</span>
         </a>
         <a href="?token=<?= htmlspecialchars($token) ?>&section=usuarios" class="<?= $section === 'usuarios' ? 'active' : '' ?>">
-            👥 <span>Usuarios</span>
+            <span>Usuarios</span>
+        </a>
+        <a href="?token=<?= htmlspecialchars($token) ?>&section=encuestas" class="<?= $section === 'encuestas' ? 'active' : '' ?>">
+            <span>Encuestas</span>
         </a>
     </nav>
     <div class="sidebar-footer">
-        <a href="../index.php">← Volver al sitio</a>
-        <span style="display:block;margin-top:8px;"><a href="?logout=1" style="color:#e74c3c;">✕ Cerrar sesión</a></span>
+        <a href="../index.php">Volver al sitio</a>
+        <span style="display:block;margin-top:8px;"><a href="?logout=1" style="color:#e74c3c;">Cerrar sesión</a></span>
     </div>
 </aside>
 
 <main class="main-content">
     <?php
     $message = $_GET['msg'] ?? '';
+    $msg_status = $_GET['status'] ?? '';
 
     switch ($section) {
         case 'backups':
@@ -304,11 +328,20 @@ $section = $_GET['section'] ?? 'dashboard';
         case 'usuarios':
             require 'usuarios.php';
             break;
+        case 'encuestas':
+            require 'encuestas.php';
+            break;
         default:
             // Dashboard
-            require __DIR__ . '/../db.php';
-            $total_usuarios = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as count FROM usuarios"))['count'];
-            $sql_check = mysqli_query($conn, "SELECT COUNT(*) as count FROM encuestas");
+            $db = conectar_bd();
+            $total_usuarios = 0;
+            $total_encuestas = 0;
+            if ($db) {
+                $r = @mysqli_query($db, "SELECT COUNT(*) as count FROM usuarios");
+                $total_usuarios = $r ? (int)mysqli_fetch_assoc($r)['count'] : 0;
+                $r2 = @mysqli_query($db, "SELECT COUNT(*) as count FROM encuestas");
+                $total_encuestas = $r2 ? (int)mysqli_fetch_assoc($r2)['count'] : 0;
+            }
             $total_encuestas = $sql_check ? mysqli_fetch_assoc($sql_check)['count'] : 0;
             ?>
             <div class="page-header">
@@ -327,7 +360,7 @@ $section = $_GET['section'] ?? 'dashboard';
                 <div class="stat-card">
                     <h3>Backups</h3>
                     <div class="value"><?php
-                        $backup_dir = '/opt/lampp/htdocs/progolf/backups';
+                        $backup_dir = __DIR__ . '/../backups';
                         $count = 0;
                         if (is_dir($backup_dir)) {
                             foreach (scandir($backup_dir) as $f) {
@@ -339,14 +372,14 @@ $section = $_GET['section'] ?? 'dashboard';
                 </div>
                 <div class="stat-card">
                     <h3>Espacio Libre</h3>
-                    <div class="value"><?= round(disk_free_space('/opt/lampp/htdocs/progolf/backups') / 1024 / 1024 / 1024, 2) ?> GB</div>
+                    <div class="value"><?= round(disk_free_space(__DIR__ . '/../backups') / 1024 / 1024 / 1024, 2) ?> GB</div>
                 </div>
             </div>
             <div class="card">
                 <h2>Acceso Rápido</h2>
                 <div class="flex gap-10">
-                    <a href="?token=<?= htmlspecialchars($token) ?>&section=backups" class="btn btn-primary">💾 Gestionar Backups</a>
-                    <a href="?token=<?= htmlspecialchars($token) ?>&section=usuarios" class="btn btn-success">👥 Gestionar Usuarios</a>
+                    <a href="?token=<?= htmlspecialchars($token) ?>&section=backups" class="btn btn-primary">Gestionar Backups</a>
+                    <a href="?token=<?= htmlspecialchars($token) ?>&section=usuarios" class="btn btn-success">Gestionar Usuarios</a>
                 </div>
             </div>
             <?php

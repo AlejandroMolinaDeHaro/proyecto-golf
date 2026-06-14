@@ -1,13 +1,21 @@
 <?php
-$backup_dir = '/opt/lampp/htdocs/progolf/backups';
+$backup_dir = __DIR__ . '/../backups';
 $log_file = $backup_dir . '/backup.log';
 
 // Eliminar backup
 if (isset($_GET['delete'])) {
     $file = basename($_GET['delete']);
     $path = $backup_dir . '/' . $file;
-    if (file_exists($path) && unlink($path)) {
-        $message = 'Backup eliminado: ' . $file;
+    if (file_exists($path)) {
+        if (is_dir($path)) {
+            foreach (glob($path . '/*') as $f) unlink($f);
+            $deleted = rmdir($path);
+        } else {
+            $deleted = unlink($path);
+        }
+        if ($deleted) {
+            $message = 'Backup eliminado: ' . $file;
+        }
     }
 }
 
@@ -16,7 +24,7 @@ $backups = [];
 if (is_dir($backup_dir)) {
     $files = scandir($backup_dir, SCANDIR_SORT_DESCENDING);
     foreach ($files as $file) {
-        if ($file != '.' && $file != '..' && $file != 'backup.log') {
+        if ($file != '.' && $file != '..' && $file != 'backup.log' && !is_dir($backup_dir . '/' . $file)) {
             $path = $backup_dir . '/' . $file;
             $backups[] = [
                 'name' => $file,
@@ -41,8 +49,8 @@ $disk_total = disk_total_space($backup_dir);
     <p>Gestión de copias de seguridad</p>
 </div>
 
-<?php if (isset($message)): ?>
-    <div class="message <?php echo strpos($message, 'Error') !== false ? 'error' : 'success'; ?>">
+<?php if (isset($message) && $message !== ''): ?>
+    <div class="message <?php echo $msg_status === 'error' ? 'error' : 'success'; ?>">
         <?php echo htmlspecialchars($message); ?>
     </div>
 <?php endif; ?>
@@ -68,11 +76,21 @@ $disk_total = disk_total_space($backup_dir);
 
 <div class="card">
     <h2>Acciones</h2>
-    <button onclick="ejecutarBackup()" class="btn btn-primary" id="btnBackup">
+    <a href="api/backup.php?token=<?php echo htmlspecialchars($token); ?>&redirect=1" class="btn btn-primary" onclick="return confirm('¿Ejecutar backup ahora?')">
         Ejecutar Backup Manual
-    </button>
+    </a>
     <button onclick="verLog()" class="btn btn-success" style="margin-left: 10px;">Ver Log</button>
     <div id="backupResult" class="mt-20"></div>
+</div>
+
+<div class="card">
+    <h2>Subir Backup</h2>
+    <form method="POST" enctype="multipart/form-data" action="api/upload.php" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
+        <input type="hidden" name="redirect" value="1">
+        <input type="file" name="backup_file" required style="flex:1;min-width:200px;padding:10px;border:2px solid #ddd;border-radius:10px;background:var(--cream);font-family:'Lato',sans-serif;">
+        <button type="submit" class="btn btn-primary">Subir Backup</button>
+    </form>
 </div>
 
 <div class="card" id="logCard" style="display: none;">
@@ -103,7 +121,12 @@ $disk_total = disk_total_space($backup_dir);
                     <td><?php echo $backup['date']; ?></td>
                     <td><?php echo $backup['size_mb']; ?> MB</td>
                     <td>
-                        <button onclick="restaurar('<?php echo addslashes($backup['name']); ?>')" class="btn btn-success btn-small">Restaurar</button>
+                        <form method="POST" action="api/restore.php" style="display:inline" onsubmit="return confirm('¿Restaurar desde <?php echo addslashes($backup['name']); ?>?\n\n¡ESTO SOBRESCRIBIRÁ LOS DATOS ACTUALES!')">
+                            <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
+                            <input type="hidden" name="file" value="<?php echo htmlspecialchars($backup['name']); ?>">
+                            <input type="hidden" name="redirect" value="1">
+                            <button type="submit" class="btn btn-success btn-small">Restaurar</button>
+                        </form>
                         <a href="?token=<?php echo htmlspecialchars($token); ?>&section=backups&delete=<?php echo urlencode($backup['name']); ?>" class="btn btn-danger btn-small" onclick="return confirm('¿Eliminar este backup?')">Eliminar</a>
                     </td>
                 </tr>
@@ -116,65 +139,12 @@ $disk_total = disk_total_space($backup_dir);
 <script>
 const TOKEN = <?php echo json_encode($token); ?>;
 
-function ejecutarBackup() {
-    const btn = document.getElementById('btnBackup');
-    const result = document.getElementById('backupResult');
-    btn.disabled = true;
-    btn.textContent = 'Ejecutando backup...';
-    result.innerHTML = '<div class="message info">⏳ Ejecutando backup, por favor espera...</div>';
-
-    fetch('../backup-admin/backup.php?token=' + TOKEN)
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                result.innerHTML = '<div class="message success">' + data.message + '</div>';
-                setTimeout(() => location.reload(), 2000);
-            } else {
-                result.innerHTML = '<div class="message error">' + data.message + '</div>';
-            }
-        })
-        .catch(err => {
-            result.innerHTML = '<div class="message error">Error: ' + err + '</div>';
-        })
-        .finally(() => {
-            btn.disabled = false;
-            btn.textContent = 'Ejecutar Backup Manual';
-        });
-}
-
-function restaurar(filename) {
-    if (!confirm('¿Restaurar desde ' + filename + '?\n\n¡ESTO SOBRESCRIBIRÁ LOS DATOS ACTUALES!')) {
-        return;
-    }
-
-    const result = document.getElementById('backupResult');
-    result.innerHTML = '<div class="message info">⏳ Restaurando, por favor espera...</div>';
-
-    fetch('../backup-admin/restore.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'token=' + TOKEN + '&file=' + encodeURIComponent(filename)
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success) {
-            result.innerHTML = '<div class="message success">' + data.message + '</div>';
-            setTimeout(() => location.reload(), 3000);
-        } else {
-            result.innerHTML = '<div class="message error">' + data.message + '</div>';
-        }
-    })
-    .catch(err => {
-        result.innerHTML = '<div class="message error">Error: ' + err + '</div>';
-    });
-}
-
 function verLog() {
     const card = document.getElementById('logCard');
     const content = document.getElementById('logContent');
 
     if (card.style.display === 'none') {
-        fetch('../backup-admin/get_log.php?token=' + TOKEN)
+        fetch('api/get_log.php?token=' + TOKEN)
             .then(r => r.text())
             .then(data => {
                 content.textContent = data;
